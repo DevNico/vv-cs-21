@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'de.nicolasschlecker'
+group 'de.nicolasschlecker.vv'
 version '1.0-SNAPSHOT'
 
 repositories {
