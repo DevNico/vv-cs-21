@@ -19,4 +19,4 @@ test:
     script:
         - echo "Testing"
         - cd ./build/libs
-        - java jar *.jar
+        - java -jar *.jar
