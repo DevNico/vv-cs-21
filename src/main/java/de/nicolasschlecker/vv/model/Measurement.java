@@ -1,8 +1,11 @@
-package de.nicolasschlecker.vv;
+package de.nicolasschlecker.vv.model;
 
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.nicolasschlecker.vv.serialisation.LocalDateTimeAdapter;
+import de.nicolasschlecker.vv.serialisation.MeasurementTypeAdapter;
+import de.nicolasschlecker.vv.serialisation.MeasurementUnitAdapter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -77,7 +80,7 @@ public class Measurement {
      * @param json the json
      * @return the measurement
      */
-    static Measurement fromJson(String json) {
+    public static Measurement fromJson(String json) {
         return gson.fromJson(json, Measurement.class);
     }
 
@@ -86,7 +89,7 @@ public class Measurement {
      *
      * @return the string
      */
-    String toJson() {
+    public String toJson() {
         return gson.toJson(this);
     }
 

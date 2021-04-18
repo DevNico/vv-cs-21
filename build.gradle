@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'jacoco'
+    id "org.sonarqube" version "3.0"
 }
 
 group 'de.nicolasschlecker.vv'
@@ -32,6 +34,25 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+// Do not generate reports for individual projects
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination layout.buildDirectory.dir('jacocoHtml').get().asFile
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", project.properties['SONAR_PROJECT_KEY']
+        property "sonar.host.url", project.properties['SONAR_HOST']
+        property "sonar.login", project.properties['SONAR_LOGIN']
+    }
 }
 
 java {
@@ -43,7 +64,7 @@ java {
 jar {
     manifest {
         attributes(
-            'Main-Class': 'de.nicolasschlecker.vv.Main'
+                'Main-Class': 'de.nicolasschlecker.vv.Main'
         )
     }
     from {

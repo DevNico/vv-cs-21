@@ -1,4 +1,4 @@
-package de.nicolasschlecker.vv;
+package de.nicolasschlecker.vv.serialisation;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

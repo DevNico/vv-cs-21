@@ -289,3 +289,6 @@ gradle-app.setting
 **/build/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,intellij+all,java,vscode,gradle,eclipse,netbeans
+
+# Contains sonarqube login information
+gradle.properties
