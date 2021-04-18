@@ -1,6 +1,7 @@
 stages:
     - build
     - test
+    - acceptancetest
 
 build:
     stage: build
@@ -11,12 +12,26 @@ build:
     artifacts:
         paths:
             - ./build/libs/*.jar
-        expire_in: 1 week
+        expire_in: 1 day
 
 test:
     stage: test
     image: adoptopenjdk:11-jre-hotspot
     script:
-        - echo "Testing"
+        - echo "Running unit tests and static code analysis"
+        - gradle check
+    artifacts:
+        reports:
+            junit:
+                - ./build/test-results/test/TEST-*.xml
+        paths:
+            - ./build*
+        expire_in: 1 day
+
+acceptancetest-java:
+    stage: acceptancetest
+    image: adoptopenjdk:11-jre-hotspot
+    script:
+        - echo "Acceptance Test"
         - cd ./build/libs
         - java -jar *.jar
