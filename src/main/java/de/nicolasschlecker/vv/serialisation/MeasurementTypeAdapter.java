@@ -3,7 +3,7 @@ package de.nicolasschlecker.vv.serialisation;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import de.nicolasschlecker.vv.model.MeasurementType;
+import de.nicolasschlecker.vv.domain.models.MeasurementType;
 
 import java.io.IOException;
 

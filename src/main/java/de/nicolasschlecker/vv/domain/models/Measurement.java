@@ -1,4 +1,4 @@
-package de.nicolasschlecker.vv.model;
+package de.nicolasschlecker.vv.domain.models;
 
 
 import com.google.gson.Gson;
@@ -9,7 +9,6 @@ import de.nicolasschlecker.vv.serialisation.MeasurementUnitAdapter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
@@ -58,20 +57,6 @@ public class Measurement {
         this.value = value;
         this.unit = unit;
         this.timestamp = timestamp;
-    }
-
-    /**
-     * Instantiates a new Measurement with the timestamp initialized as the current time.
-     *
-     * @param type  the type
-     * @param value the value
-     * @param unit  the unit
-     */
-    public Measurement(MeasurementType type, int value, MeasurementUnit unit) {
-        this(type, value, unit, ZonedDateTime
-                .of(LocalDateTime.now(), ZoneId.systemDefault())
-                .withZoneSameInstant(ZoneOffset.UTC)
-                .toLocalDateTime());
     }
 
     /**
@@ -157,7 +142,7 @@ public class Measurement {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Measurement that = (Measurement) o;
-        return getValue() == that.getValue() && getType() == that.getType() && getUnit() == that.getUnit() && getTimestamp().equals(that.getTimestamp());
+        return getValue() == that.getValue() && getType() == that.getType() && getUnit() == that.getUnit() && Objects.equals(getTimestamp(), that.getTimestamp());
     }
 
     @Override

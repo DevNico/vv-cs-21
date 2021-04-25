@@ -15,21 +15,13 @@ dependencies {
     // Serialisation
     implementation 'com.google.code.gson:gson:2.8.6'
 
-    // Logging
-    implementation 'ch.qos.logback:logback-classic:1.2.3'
-    implementation 'org.codehaus.janino:janino:3.0.8'
-
-
     // Test dependencies
 
     // Unit Tests
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testImplementation 'org.mockito:mockito-inline:3.7.7'
+    testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.6'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-
-    // Logging
-    testImplementation 'ch.qos.logback:logback-classic:1.2.3'
-    testImplementation 'org.codehaus.janino:janino:3.0.8'
 }
 
 test {
