@@ -7,6 +7,9 @@ plugins {
 group 'de.nicolasschlecker.vv'
 version '1.0-SNAPSHOT'
 
+sourceCompatibility = '1.11'
+targetCompatibility = '1.11'
+
 repositories {
     mavenCentral()
 }

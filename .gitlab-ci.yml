@@ -1,6 +1,6 @@
 stages:
     - build
-    - check
+    - test
     - dockerize
 
 build:
@@ -14,12 +14,12 @@ build:
             - ./build/libs/*.jar
         expire_in: 1 day
 
-check:
-    stage: check
+test:
+    stage: test
     image: adoptopenjdk:11-jre-hotspot
     script:
         - echo "Running unit tests and static code analysis"
-        - gradle check
+        - gradle test
     artifacts:
         reports:
             junit:
