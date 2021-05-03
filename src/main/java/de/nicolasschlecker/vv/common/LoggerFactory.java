@@ -14,7 +14,7 @@ public class LoggerFactory {
     private LoggerFactory() {
     }
 
-    public static java.util.logging.Logger getLogger(Class<?> clazz) {
+    public static Logger getLogger(Class<?> clazz) {
         if (rootLogger == null) {
             System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tY-%1$tm-1%td %1$tH:%1$tM:%1$tS %2$s [%4$s] %5$s%6$s%n");
             rootLogger = Logger.getLogger("Root");
