@@ -7,9 +7,6 @@ plugins {
 group 'de.nicolasschlecker.vv'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = '1.11'
-targetCompatibility = '1.11'
-
 repositories {
     mavenCentral()
 }
@@ -19,8 +16,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     // Test dependencies
-
-    // Unit Tests
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.1'
     testImplementation 'org.hamcrest:hamcrest:2.2'
