@@ -1,6 +1,6 @@
 package de.nicolasschlecker.vv.domain.exceptions;
 
-public class InvalidConfigurationException extends Exception {
+public final class InvalidConfigurationException extends RuntimeException {
     public InvalidConfigurationException(String message) {
         super(message);
     }

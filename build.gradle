@@ -19,8 +19,11 @@ dependencies {
 
     // Unit Tests
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.1'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
     testImplementation 'org.mockito:mockito-inline:3.7.7'
     testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.6'
+    testImplementation 'com.github.stefanbirkner:system-lambda:1.2.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
@@ -41,7 +44,7 @@ jacocoTestReport {
 
 sonarqube {
     properties {
-        property "sonar.projectKey", project.properties['SONAR_PROJECT_KEY']
+        property "sonar.projectKey", project.properties["SONAR_PROJECT_KEY"]
         property "sonar.host.url", project.properties['SONAR_HOST']
         property "sonar.login", project.properties['SONAR_LOGIN']
     }

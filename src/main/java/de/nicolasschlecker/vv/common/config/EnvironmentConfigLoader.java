@@ -9,21 +9,23 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 
 public class EnvironmentConfigLoader implements IConfigLoader {
-    private static final String PORT = "PORT";
-    private static final String LOG_FILE = "LOG_FILE";
-    private static final String LOG_LEVEL = "LOG_LEVEL";
+    public static final String PORT = "PORT";
+    public static final String LOG_FILE = "LOG_FILE";
+    public static final String LOG_LEVEL = "LOG_LEVEL";
+    public static final String JSON_FILE = "JSON_FILE";
 
     @Override
-    public Config getConfig() throws InvalidConfigurationException {
-        int port = getPort();
-        var logFilePath = getLogFilePath();
-        var logLevel = getLogLevel();
+    public Config getConfig(Config defaultConfig) throws InvalidConfigurationException {
+        int port = getPort(defaultConfig.getPort());
+        var logFilePath = getPath(LOG_FILE, defaultConfig.getLogFilePath());
+        var logLevel = getLogLevel(defaultConfig.getLogLevel());
+        var jsonFilePath = getPath(JSON_FILE, defaultConfig.getJsonFilePath());
 
-        return new Config(port, logFilePath, logLevel);
+        return new Config(port, logFilePath, logLevel, jsonFilePath);
     }
 
-    private int getPort() throws InvalidConfigurationException {
-        var portString = getString(PORT);
+    private int getPort(int defaultPort) throws InvalidConfigurationException {
+        var portString = getString(PORT, String.valueOf(defaultPort));
 
         try {
             return Integer.parseInt(portString);
@@ -32,18 +34,18 @@ public class EnvironmentConfigLoader implements IConfigLoader {
         }
     }
 
-    private Path getLogFilePath() throws InvalidConfigurationException {
-        var logFileString = getString(LOG_FILE);
+    private Path getPath(String variable, Path defaultPath) throws InvalidConfigurationException {
+        var pathString = getString(variable, defaultPath.toString());
 
         try {
-            return Paths.get(logFileString);
+            return Paths.get(pathString);
         } catch (InvalidPathException e) {
-            throw new InvalidConfigurationException(String.format("Invalid value \"%s\" provided for \"%s\". Has to be a valid Path.", logFileString, LOG_FILE));
+            throw new InvalidConfigurationException(String.format("Invalid value \"%s\" provided for \"%s\". Has to be a valid Path.", pathString, variable));
         }
     }
 
-    private Level getLogLevel() throws InvalidConfigurationException {
-        var logLevelString = getString(LOG_LEVEL);
+    private Level getLogLevel(Level defaultLogLevel) throws InvalidConfigurationException {
+        var logLevelString = getString(LOG_LEVEL, defaultLogLevel.toString());
 
         try {
             return Level.parse(logLevelString);
@@ -52,9 +54,9 @@ public class EnvironmentConfigLoader implements IConfigLoader {
         }
     }
 
-    private String getString(String variable) throws InvalidConfigurationException {
+    private String getString(String variable, String defaultValue) throws InvalidConfigurationException {
         try {
-            return System.getenv(variable);
+            return System.getProperty(variable, defaultValue);
         } catch (SecurityException e) {
             throw new InvalidConfigurationException("Could not access environment variable \"" + variable + "\" (" + e.getMessage() + ")");
         }
