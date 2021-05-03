@@ -1,21 +1,21 @@
 stages:
     - build
-    - test
-    - acceptancetest
+    - check
+    - dockerize
 
 build:
     stage: build
-    image: gradle:6.8.3-jdk11
+    image: inf-docker.fh-rosenheim.de/studwinten4338/docker-images/gradle:6.8.3-jdk11
     script:
         - echo "Compiling"
-        - gradle build
+        - gradle assemble
     artifacts:
         paths:
             - ./build/libs/*.jar
         expire_in: 1 day
 
-test:
-    stage: test
+check:
+    stage: check
     image: adoptopenjdk:11-jre-hotspot
     script:
         - echo "Running unit tests and static code analysis"
@@ -28,10 +28,16 @@ test:
             - ./build*
         expire_in: 1 day
 
-acceptancetest-java:
-    stage: acceptancetest
-    image: adoptopenjdk:11-jre-hotspot
+docker-build:
+    image: inf-docker.fh-rosenheim.de/studwinten4338/docker-images/docker:latest
+    stage: dockerize
+    services:
+        - name: inf-docker.fh-rosenheim.de/studwinten4338/docker-images/docker:dind
+          alias: docker
+
+    before_script:
+        - echo $CI_BUILD_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     script:
-        - echo "Acceptance Test"
-        - cd ./build/libs
-        - java -jar *.jar
+        - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+        - docker push "$CI_REGISTRY_IMAGE"
+

@@ -292,3 +292,5 @@ gradle-app.setting
 
 # Contains sonarqube login information
 gradle.properties
+
+logs*
