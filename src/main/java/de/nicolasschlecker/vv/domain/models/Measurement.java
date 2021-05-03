@@ -1,44 +1,26 @@
 package de.nicolasschlecker.vv.domain.models;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import de.nicolasschlecker.vv.serialisation.LocalDateTimeAdapter;
-import de.nicolasschlecker.vv.serialisation.MeasurementTypeAdapter;
-import de.nicolasschlecker.vv.serialisation.MeasurementUnitAdapter;
+import de.nicolasschlecker.vv.common.JsonFactory;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
-/**
- * The type Measurement.
- */
 public class Measurement {
     /**
-     * The Gson instance for json conversion of Measurements.
+     * The {@link Type}
      */
-    private static final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(MeasurementType.class, new MeasurementTypeAdapter())
-            .registerTypeAdapter(MeasurementUnit.class, new MeasurementUnitAdapter()).create();
-
-    /**
-     * The {@link MeasurementType}
-     */
-    private final MeasurementType type;
-
+    private final Type type;
     /**
      * The value
      */
-    private final int value;
-
+    private final long value;
     /**
-     * The {@link MeasurementUnit}
+     * The {@link Unit}
      */
-    private final MeasurementUnit unit;
-
+    private final Unit unit;
     /**
      * The timestamp in UTC
      */
@@ -52,30 +34,15 @@ public class Measurement {
      * @param unit      the unit
      * @param timestamp the timestamp
      */
-    public Measurement(MeasurementType type, int value, MeasurementUnit unit, LocalDateTime timestamp) {
+    public Measurement(Type type, int value, Unit unit, LocalDateTime timestamp) {
         this.type = type;
         this.value = value;
         this.unit = unit;
         this.timestamp = timestamp;
     }
 
-    /**
-     * From json measurement.
-     *
-     * @param json the json
-     * @return the measurement
-     */
     public static Measurement fromJson(String json) {
-        return gson.fromJson(json, Measurement.class);
-    }
-
-    /**
-     * To json string.
-     *
-     * @return the string
-     */
-    public String toJson() {
-        return gson.toJson(this);
+        return JsonFactory.fromJson(json, Measurement.class);
     }
 
     /**
@@ -83,7 +50,7 @@ public class Measurement {
      *
      * @return the type
      */
-    public MeasurementType getType() {
+    public Type getType() {
         return type;
     }
 
@@ -92,7 +59,7 @@ public class Measurement {
      *
      * @return the value
      */
-    public int getValue() {
+    public long getValue() {
         return value;
     }
 
@@ -101,7 +68,7 @@ public class Measurement {
      *
      * @return the unit
      */
-    public MeasurementUnit getUnit() {
+    public Unit getUnit() {
         return unit;
     }
 
@@ -127,6 +94,10 @@ public class Measurement {
                 .toLocalDateTime();
     }
 
+    public String toJson() {
+        return JsonFactory.toJson(this);
+    }
+
     @Override
     public String toString() {
         return "Measurement{" +
@@ -148,5 +119,44 @@ public class Measurement {
     @Override
     public int hashCode() {
         return Objects.hash(getType(), getValue(), getUnit(), getTimestamp());
+    }
+
+    public enum Unit {
+        CELSIUS("celsius"),
+        KELVIN("kelvin"),
+        PERCENT("percent"),
+        UNITS("units"),
+        CMS("cms"),
+        KWH("kwh");
+
+        private final String name;
+
+        Unit(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    public enum Type {
+        TEMPERATURE("temperature"),
+        PRESSURE("pressure"),
+        COUNT("count"),
+        FLOW_RATE("flow_rate"),
+        ENERGY("energy");
+
+        private final String name;
+
+        Type(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }
