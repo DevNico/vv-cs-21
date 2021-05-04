@@ -16,7 +16,7 @@ build:
 
 test:
     stage: test
-    image: adoptopenjdk:11-jre-hotspot
+    image: inf-docker.fh-rosenheim.de/studwinten4338/docker-images/gradle:6.8.3-jdk11
     script:
         - echo "Running unit tests and static code analysis"
         - gradle test
