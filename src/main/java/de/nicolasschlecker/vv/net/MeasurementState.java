@@ -17,6 +17,7 @@ public class MeasurementState {
     private static final int TRANSITION_MEASUREMENT = 2;
     private static final int TRANSITION_TERMINATE = 3;
     private State state;
+
     public MeasurementState() {
         this(State.WAITING_FOR_CLIENT);
     }

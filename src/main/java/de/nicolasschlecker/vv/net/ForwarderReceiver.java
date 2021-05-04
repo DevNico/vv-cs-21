@@ -26,9 +26,9 @@ public class ForwarderReceiver implements IForwarderReceiver {
         try {
             this.toServer = new PrintStream(peer.getOutputStream());
             this.fromServer = new BufferedReader(new InputStreamReader(peer.getInputStream()));
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            throw new ConnectionException("Could not connect to Server");
+            throw new ConnectionException("Could not connect");
         }
     }
 
@@ -42,14 +42,9 @@ public class ForwarderReceiver implements IForwarderReceiver {
     @Override
     public Future<Message> receive() {
         return executor.submit(() -> {
-            try {
-                var response = Message.fromJson(fromServer.readLine());
-                LOGGER.info(() -> String.format("Received: %s", response));
-                return response;
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw e;
-            }
+            var response = Message.fromJson(fromServer.readLine());
+            LOGGER.info(() -> String.format("Received: %s", response));
+            return response;
         });
     }
 

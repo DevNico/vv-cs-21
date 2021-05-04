@@ -20,7 +20,6 @@ public class LoggerFactory {
             rootLogger = Logger.getLogger("Root");
 
             final var config = ApplicationConfig.getConfig();
-
             rootLogger.setLevel(config.getLogLevel());
 
             try {

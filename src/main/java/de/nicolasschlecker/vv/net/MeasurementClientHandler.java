@@ -3,7 +3,6 @@ package de.nicolasschlecker.vv.net;
 import de.nicolasschlecker.vv.common.LoggerFactory;
 import de.nicolasschlecker.vv.domain.models.Measurement;
 import de.nicolasschlecker.vv.domain.models.Message;
-import de.nicolasschlecker.vv.net.interfaces.IMeasurementClientHandler;
 import de.nicolasschlecker.vv.net.interfaces.IMeasurementServer;
 
 import java.util.concurrent.BlockingQueue;
@@ -11,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MeasurementClientHandler implements IMeasurementClientHandler {
+public class MeasurementClientHandler implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementClientHandler.class);
 
     private final ForwarderReceiver forwarderReceiver;

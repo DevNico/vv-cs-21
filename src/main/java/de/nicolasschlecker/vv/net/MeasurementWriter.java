@@ -31,6 +31,7 @@ public class MeasurementWriter implements Runnable {
                 LOGGER.info(() -> String.format("Writing new measurement %s", measurementJsonString));
                 bufferedWriter.write(measurementJsonString);
                 bufferedWriter.newLine();
+                bufferedWriter.flush();
             }
         } catch (InterruptedException | IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);

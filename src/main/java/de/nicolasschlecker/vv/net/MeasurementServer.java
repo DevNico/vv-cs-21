@@ -1,7 +1,6 @@
 package de.nicolasschlecker.vv.net;
 
 import de.nicolasschlecker.vv.common.LoggerFactory;
-import de.nicolasschlecker.vv.net.interfaces.IMeasurementClientHandler;
 import de.nicolasschlecker.vv.net.interfaces.IMeasurementServer;
 
 import java.io.IOException;
@@ -54,7 +53,7 @@ public class MeasurementServer implements IMeasurementServer {
         }
     }
 
-    private IMeasurementClientHandler handleClient(Socket socket) {
+    private Runnable handleClient(Socket socket) {
         final var toClient = new ForwarderReceiver(socket);
         return new MeasurementClientHandler(toClient, this, blockingQueue);
     }
