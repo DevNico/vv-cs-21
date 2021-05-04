@@ -125,6 +125,7 @@ public class Measurement {
         CELSIUS("celsius"),
         KELVIN("kelvin"),
         PERCENT("percent"),
+        HECTOPASCAL("hectopascal"),
         UNITS("units"),
         CMS("cms"),
         KWH("kwh");

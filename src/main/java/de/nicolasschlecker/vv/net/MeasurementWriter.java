@@ -3,7 +3,6 @@ package de.nicolasschlecker.vv.net;
 import de.nicolasschlecker.vv.common.LoggerFactory;
 import de.nicolasschlecker.vv.common.config.ApplicationConfig;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,14 +23,12 @@ public class MeasurementWriter implements Runnable {
 
     @Override
     public void run() {
-        try (final var fileWriter = new FileWriter(jsonFile, true);
-             final var bufferedWriter = new BufferedWriter(fileWriter)) {
+        try (final var fileWriter = new FileWriter(jsonFile, true)) {
             while (!Thread.currentThread().isInterrupted()) {
                 final var measurementJsonString = blockingQueue.take();
                 LOGGER.info(() -> String.format("Writing new measurement %s", measurementJsonString));
-                bufferedWriter.write(measurementJsonString);
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
+                fileWriter.write(String.format("%s%n", measurementJsonString));
+                fileWriter.flush();
             }
         } catch (InterruptedException | IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);

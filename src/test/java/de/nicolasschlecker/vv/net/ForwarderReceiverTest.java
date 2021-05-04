@@ -37,17 +37,6 @@ class ForwarderReceiverTest {
     }
 
     @Test
-    void constructor_invalidSocket_shouldThrow() {
-        final var socket = mock(Socket.class);
-        ConnectionException thrown = assertThrows(
-                ConnectionException.class,
-                () -> new ForwarderReceiver(socket),
-                "Expected new ForwarderReceiver(socket) with invalid socket to throw, but it didn't"
-        );
-        assertTrue(thrown.getMessage().contains("Could not connect"));
-    }
-
-    @Test
     void forward() {
         forwarderReceiver.forward(message);
         assertThat(byteArrayOutputStream.toString().trim(), equalTo(message.toJson()));
