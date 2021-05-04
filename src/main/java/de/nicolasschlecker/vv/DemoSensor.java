@@ -26,18 +26,6 @@ public class DemoSensor implements Closeable {
         this.server = toServer;
     }
 
-    @Override
-    public void close() throws IOException {
-        server.close();
-    }
-
-
-    private Message callServer(Message message) throws InterruptedException, ExecutionException {
-        server.forward(message);
-        return server.receive().get();
-    }
-
-
     public static void main(String[] args) {
         final var config = ApplicationConfig.getConfig();
 
@@ -63,5 +51,15 @@ public class DemoSensor implements Closeable {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             Thread.currentThread().interrupt();
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        server.close();
+    }
+
+    private Message callServer(Message message) throws InterruptedException, ExecutionException {
+        server.forward(message);
+        return server.receive().get();
     }
 }

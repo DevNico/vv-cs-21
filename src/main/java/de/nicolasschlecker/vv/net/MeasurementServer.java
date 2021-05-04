@@ -41,7 +41,6 @@ public class MeasurementServer implements IMeasurementServer {
     public synchronized void start() {
         try (final var serverSocket = new ServerSocket(port)) {
             LOGGER.info(() -> String.format("Server started on port %s", port));
-
             executorService.execute(new MeasurementWriter(blockingQueue));
 
             while (!Thread.currentThread().isInterrupted()) {

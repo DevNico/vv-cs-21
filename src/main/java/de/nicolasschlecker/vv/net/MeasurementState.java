@@ -5,19 +5,6 @@ import de.nicolasschlecker.vv.domain.models.Message;
 import java.util.function.BiPredicate;
 
 public class MeasurementState {
-    public enum State {
-        WAITING_FOR_CLIENT,
-        WAITING_FOR_ACKNOWLEDGMENT,
-        WAITING_FOR_MEASUREMENT,
-        TERMINATED,
-        ERROR
-    }
-
-    private State state;
-    private static final int TRANSITION_SENSOR_HELLO = 0;
-    private static final int TRANSITION_ACKNOWLEDGE = 1;
-    private static final int TRANSITION_MEASUREMENT = 2;
-    private static final int TRANSITION_TERMINATE = 3;
     protected static final State[][] TRANSITIONS = {
             // WAITING_FOR_CLIENT - WAITING_FOR_ACKNOWLEDGMENT - WAITING_FOR_MEASUREMENT - TERMINATED - ERROR
             {State.WAITING_FOR_ACKNOWLEDGMENT, State.ERROR, State.ERROR, State.TERMINATED, State.ERROR}, // SENSOR_HELLO
@@ -25,7 +12,11 @@ public class MeasurementState {
             {State.ERROR, State.ERROR, State.WAITING_FOR_MEASUREMENT, State.TERMINATED, State.ERROR}, // MEASUREMENT
             {State.ERROR, State.TERMINATED, State.TERMINATED, State.TERMINATED, State.TERMINATED}, // TERMINATE
     };
-
+    private static final int TRANSITION_SENSOR_HELLO = 0;
+    private static final int TRANSITION_ACKNOWLEDGE = 1;
+    private static final int TRANSITION_MEASUREMENT = 2;
+    private static final int TRANSITION_TERMINATE = 3;
+    private State state;
     public MeasurementState() {
         this(State.WAITING_FOR_CLIENT);
     }
@@ -61,5 +52,13 @@ public class MeasurementState {
 
     public State getState() {
         return state;
+    }
+
+    public enum State {
+        WAITING_FOR_CLIENT,
+        WAITING_FOR_ACKNOWLEDGMENT,
+        WAITING_FOR_MEASUREMENT,
+        TERMINATED,
+        ERROR
     }
 }
