@@ -7,6 +7,10 @@ plugins {
 group 'de.nicolasschlecker.vv'
 version '1.0-SNAPSHOT'
 
+sourceCompatibility = '1.11'
+targetCompatibility = '1.11'
+
+
 repositories {
     mavenCentral()
 }
@@ -45,12 +49,6 @@ sonarqube {
         property "sonar.projectKey", project.properties["SONAR_PROJECT_KEY"]
         property "sonar.host.url", project.properties['SONAR_HOST']
         property "sonar.login", project.properties['SONAR_LOGIN']
-    }
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
     }
 }
 

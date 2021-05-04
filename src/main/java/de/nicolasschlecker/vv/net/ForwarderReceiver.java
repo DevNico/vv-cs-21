@@ -1,6 +1,5 @@
 package de.nicolasschlecker.vv.net;
 
-import de.nicolasschlecker.vv.common.JsonFactory;
 import de.nicolasschlecker.vv.common.LoggerFactory;
 import de.nicolasschlecker.vv.domain.exceptions.ConnectionException;
 import de.nicolasschlecker.vv.domain.models.Message;
@@ -38,7 +37,6 @@ public class ForwarderReceiver implements IForwarderReceiver {
         LOGGER.info(() -> String.format("Sent: %s", message.toString()));
         toServer.println(message.toJson());
         toServer.flush();
-
     }
 
     @Override

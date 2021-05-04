@@ -6,6 +6,7 @@ import de.nicolasschlecker.vv.domain.models.Message;
 import de.nicolasschlecker.vv.net.interfaces.IMeasurementClientHandler;
 import de.nicolasschlecker.vv.net.interfaces.IMeasurementServer;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,11 +16,13 @@ public class MeasurementClientHandler implements IMeasurementClientHandler {
 
     private final ForwarderReceiver forwarderReceiver;
     private final IMeasurementServer server;
+    private final BlockingQueue<String> blockingQueue;
     private final MeasurementState state;
 
-    public MeasurementClientHandler(ForwarderReceiver forwarderReceiver, IMeasurementServer server) {
+    public MeasurementClientHandler(ForwarderReceiver forwarderReceiver, IMeasurementServer server, BlockingQueue<String> blockingQueue) {
         this.forwarderReceiver = forwarderReceiver;
         this.server = server;
+        this.blockingQueue = blockingQueue;
         this.state = new MeasurementState();
     }
 
@@ -52,7 +55,7 @@ public class MeasurementClientHandler implements IMeasurementClientHandler {
                     if (stateFrom == MeasurementState.State.WAITING_FOR_MEASUREMENT) {
                         final var measurement = Measurement.fromJson(message.getPayload());
                         LOGGER.info(() -> String.format("Measurement received: %s", measurement));
-                        // TODO: Save
+                        blockingQueue.add(message.getPayload());
                     }
 
                     forwarderReceiver.forward(Message.STATION_READY);

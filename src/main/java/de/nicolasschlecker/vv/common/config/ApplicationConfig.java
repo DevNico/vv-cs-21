@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 
 public class ApplicationConfig {
-    public static final Config defaultConfig = new Config(3000, Paths.get("logs.txt"), Level.ALL, Paths.get("measurements.json"));
+    public static final Config defaultConfig = new Config(3000, Paths.get("logs.txt"), Level.ALL, Paths.get("measurements.txt"));
 
     private static ApplicationConfig applicationConfig;
     private Config config;

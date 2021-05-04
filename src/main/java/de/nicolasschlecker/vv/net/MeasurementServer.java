@@ -7,6 +7,8 @@ import de.nicolasschlecker.vv.net.interfaces.IMeasurementServer;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -18,6 +20,7 @@ public class MeasurementServer implements IMeasurementServer {
 
     private final int port;
     private final ExecutorService executorService;
+    private final BlockingQueue<String> blockingQueue;
 
     /**
      * Starts a server with given port and as many available threads as there are processors available on the host machine.
@@ -31,12 +34,15 @@ public class MeasurementServer implements IMeasurementServer {
     public MeasurementServer(int port, int nThreads) {
         this.port = port;
         this.executorService = Executors.newFixedThreadPool(nThreads);
+        this.blockingQueue = new ArrayBlockingQueue<>(10);
     }
 
     @Override
     public synchronized void start() {
         try (final var serverSocket = new ServerSocket(port)) {
             LOGGER.info(() -> String.format("Server started on port %s", port));
+
+            executorService.execute(new MeasurementWriter(blockingQueue));
 
             while (!Thread.currentThread().isInterrupted()) {
                 LOGGER.info("Waiting for new client...");
@@ -51,7 +57,7 @@ public class MeasurementServer implements IMeasurementServer {
 
     private IMeasurementClientHandler handleClient(Socket socket) {
         final var toClient = new ForwarderReceiver(socket);
-        return new MeasurementClientHandler(toClient, this);
+        return new MeasurementClientHandler(toClient, this, blockingQueue);
     }
 
     @Override

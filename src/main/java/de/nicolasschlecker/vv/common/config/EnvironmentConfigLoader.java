@@ -58,7 +58,7 @@ public class EnvironmentConfigLoader implements IConfigLoader {
         try {
             return System.getProperty(variable, defaultValue);
         } catch (SecurityException e) {
-            throw new InvalidConfigurationException("Could not access environment variable \"" + variable + "\" (" + e.getMessage() + ")");
+            throw new InvalidConfigurationException(String.format("Could not access environment variable \"%s\" (%s)", variable, e.getMessage()));
         }
     }
 }
