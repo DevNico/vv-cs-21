@@ -3,6 +3,9 @@ stages:
     - test
     - dockerize
 
+variables:
+    JACOCO_CSV_LOCATION: '$CI_PROJECT_DIR/build/jacocoCsv'
+
 build:
     stage: build
     image: inf-docker.fh-rosenheim.de/studwinten4338/docker-images/gradle:6.8.3-jdk11
@@ -20,6 +23,7 @@ test:
     script:
         - echo "Running unit tests and static code analysis"
         - gradle test
+        - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, " instructions covered"; print 100*covered/instructions, "% covered" }' $JACOCO_CSV_LOCATION
     artifacts:
         reports:
             junit:
