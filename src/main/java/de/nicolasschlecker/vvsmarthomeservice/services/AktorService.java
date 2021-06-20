@@ -3,6 +3,8 @@ package de.nicolasschlecker.vvsmarthomeservice.services;
 import de.nicolasschlecker.vvsmarthomeservice.domain.aktor.Aktor;
 import de.nicolasschlecker.vvsmarthomeservice.domain.aktor.PersistentAktor;
 import de.nicolasschlecker.vvsmarthomeservice.repositories.AktorRepository;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.AktorExistsException;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.AktorNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +23,13 @@ public class AktorService {
         this.mRepository = mRepository;
     }
 
-    public Optional<Aktor> create(Aktor entity) {
+    public Aktor create(Aktor entity) throws AktorExistsException {
         if (mRepository.existsById(entity.getId())) {
-            return Optional.empty();
+            throw new AktorExistsException();
         }
 
         final var persistentEntity = persistentEntityFromEntity(entity);
-        return Optional.of(entityFromPersistentEntity(mRepository.save(persistentEntity)));
+        return entityFromPersistentEntity(mRepository.save(persistentEntity));
     }
 
     public List<Aktor> findAll() {
@@ -38,15 +40,15 @@ public class AktorService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<Aktor> find(Long sensorId) {
+    public Aktor find(Long sensorId) throws AktorNotFoundException {
         final var optionalPersistentEntity = mRepository.findById(sensorId);
 
-        return optionalPersistentEntity.map(e -> {
-            if (e.getDeletedAt() == null) {
-                return entityFromPersistentEntity(e);
-            }
-            return null;
-        });
+        if (optionalPersistentEntity.isEmpty()) {
+            throw new AktorNotFoundException();
+        }
+
+        return entityFromPersistentEntity(optionalPersistentEntity.get());
+
     }
 
     protected Aktor entityFromPersistentEntity(PersistentAktor persistentAktor) {

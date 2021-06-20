@@ -2,6 +2,8 @@ package de.nicolasschlecker.vvsmarthomeservice.controller;
 
 import de.nicolasschlecker.vvsmarthomeservice.domain.aktor.Aktor;
 import de.nicolasschlecker.vvsmarthomeservice.services.AktorService;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.AktorExistsException;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.AktorNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,14 +29,19 @@ public class AktorController {
 
     @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Aktor> addAktor(@RequestBody Aktor aktor) {
-        final var created = mService.create(aktor);
-        return created.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build());
+        try {
+            return ResponseEntity.ok(mService.create(aktor));
+        } catch (AktorExistsException e) {
+            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
+        }
     }
 
     @GetMapping(value = "/{aktorId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Aktor> findAktorById(@PathVariable Long aktorId) {
-        final var aktor = mService.find(aktorId);
-
-        return aktor.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        try {
+            return ResponseEntity.ok(mService.find(aktorId));
+        } catch (AktorNotFoundException e) {
+         return ResponseEntity.notFound().build();
+        }
     }
 }
