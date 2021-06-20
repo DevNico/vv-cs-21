@@ -1,57 +1,73 @@
 package de.nicolasschlecker.vvsmarthomeservice.services;
 
+import de.nicolasschlecker.vvsmarthomeservice.common.RuleMapper;
 import de.nicolasschlecker.vvsmarthomeservice.domain.rule.PersistentRule;
 import de.nicolasschlecker.vvsmarthomeservice.domain.rule.Rule;
+import de.nicolasschlecker.vvsmarthomeservice.domain.rule.RulePartial;
 import de.nicolasschlecker.vvsmarthomeservice.repositories.AktorRepository;
 import de.nicolasschlecker.vvsmarthomeservice.repositories.RuleRepository;
 import de.nicolasschlecker.vvsmarthomeservice.repositories.SensorRepository;
 import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.AktorNotFoundException;
-import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.RuleExistsException;
 import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.RuleNotFoundException;
 import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.SensorNotFoundException;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
 public class RulesService {
+    private final Validator validator;
+    private final RuleMapper ruleMapper;
+
     private final RuleRepository ruleRepository;
     private final AktorRepository aktorRepository;
     private final SensorRepository sensorRepository;
 
     @Autowired
-    public RulesService(RuleRepository ruleRepository, AktorRepository aktorRepository, SensorRepository sensorRepository) {
+    public RulesService(Validator validator, RuleMapper ruleMapper, RuleRepository ruleRepository, AktorRepository aktorRepository, SensorRepository sensorRepository) {
+        this.validator = validator;
+        this.ruleMapper = ruleMapper;
         this.ruleRepository = ruleRepository;
         this.aktorRepository = aktorRepository;
         this.sensorRepository = sensorRepository;
     }
 
-    public Rule create(Rule entity) throws RuleExistsException, AktorNotFoundException, SensorNotFoundException {
-        if (ruleRepository.existsById(entity.getId())) {
-            throw new RuleExistsException();
+    public Rule create(RulePartial rulePartial) throws AktorNotFoundException, SensorNotFoundException, ValidationException {
+        final var violations = new ArrayList<ConstraintViolation<?>>(validator.validate(rulePartial));
+        if (!violations.isEmpty()) {
+            throw new ValidationException(violations);
         }
 
-        if (!aktorRepository.existsById(entity.getAktorId())) {
+        final var optionalPersistentAktor = aktorRepository.findById(rulePartial.getAktorId());
+        if (optionalPersistentAktor.isEmpty()) {
             throw new AktorNotFoundException();
         }
 
-        if (!sensorRepository.existsById(entity.getSensorId())) {
+        final var optionalPersistentSensor = sensorRepository.findById(rulePartial.getSensorId());
+        if (optionalPersistentSensor.isEmpty()) {
             throw new SensorNotFoundException();
         }
 
-        final var persistentEntity = persistentEntityFromEntity(entity);
-        return entityFromPersistentEntity(ruleRepository.save(persistentEntity));
+        final var persistentEntity = new PersistentRule();
+        persistentEntity.setName(rulePartial.getName());
+        persistentEntity.setThreshold(rulePartial.getThreshold());
+        persistentEntity.setAktor(optionalPersistentAktor.get());
+        persistentEntity.setSensor(optionalPersistentSensor.get());
+        return ruleMapper.fromPersistent(ruleRepository.save(persistentEntity));
     }
 
     public List<Rule> findAll() {
         return StreamSupport
                 .stream(ruleRepository.findAll().spliterator(), false)
-                .filter(p -> p.getDeletedAt() != null)
-                .map(this::entityFromPersistentEntity)
+                .filter(p -> p.getDeletedAt() == null)
+                .map(ruleMapper::fromPersistent)
                 .collect(Collectors.toList());
     }
 
@@ -68,7 +84,7 @@ public class RulesService {
             throw new RuleNotFoundException();
         }
 
-        return entityFromPersistentEntity(rule);
+        return ruleMapper.fromPersistent(rule);
     }
 
     public Rule findByName(String name) throws RuleNotFoundException {
@@ -84,26 +100,6 @@ public class RulesService {
             throw new RuleNotFoundException();
         }
 
-        return entityFromPersistentEntity(rule);
-    }
-
-    protected Rule entityFromPersistentEntity(PersistentRule e) {
-        final var rule = new Rule();
-        rule.setId(e.getId());
-        rule.setName(e.getName());
-        rule.setThreshold(e.getThreshold());
-        rule.setCreatedAt(e.getCreatedAt().toLocalDateTime());
-        rule.setUpdatedAt(e.getUpdatedAt().toLocalDateTime());
-        return rule;
-    }
-
-    protected PersistentRule persistentEntityFromEntity(Rule e) {
-        final var persistentRule = new PersistentRule();
-        persistentRule.setId(e.getId());
-        persistentRule.setName(e.getName());
-        persistentRule.setThreshold(e.getThreshold());
-        persistentRule.setCreatedAt(Timestamp.valueOf(e.getCreatedAt()));
-        persistentRule.setUpdatedAt(Timestamp.valueOf(e.getUpdatedAt()));
-        return persistentRule;
+        return ruleMapper.fromPersistent(rule);
     }
 }

@@ -11,9 +11,9 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "sensor")
 public class PersistentSensor {
     @Id
-    @GeneratedValue
     private Long id;
 
     private String name;

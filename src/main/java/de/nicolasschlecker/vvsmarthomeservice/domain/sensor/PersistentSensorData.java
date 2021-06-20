@@ -1,31 +1,22 @@
 package de.nicolasschlecker.vvsmarthomeservice.domain.sensor;
 
-import de.nicolasschlecker.vvsmarthomeservice.domain.TemperatureUnit;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Data
+@Table(name = "sensor_data")
 public class PersistentSensorData {
     @Id
     @GeneratedValue
     private Long id;
 
-    @Min(0)
-    @Max(30)
     private int currentValue;
-
     private Timestamp timestamp;
-
     private TemperatureUnit temperatureUnit;
 
     @OneToOne(mappedBy = "sensorData")

@@ -1,6 +1,7 @@
 package de.nicolasschlecker.vvsmarthomeservice.controller;
 
 import de.nicolasschlecker.vvsmarthomeservice.domain.aktor.Aktor;
+import de.nicolasschlecker.vvsmarthomeservice.domain.aktor.AktorPartial;
 import de.nicolasschlecker.vvsmarthomeservice.services.AktorService;
 import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.AktorExistsException;
 import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.AktorNotFoundException;
@@ -28,7 +29,7 @@ public class AktorController {
     }
 
     @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Aktor> addAktor(@RequestBody Aktor aktor) {
+    public ResponseEntity<Aktor> addAktor(@RequestBody AktorPartial aktor) {
         try {
             return ResponseEntity.ok(mService.create(aktor));
         } catch (AktorExistsException e) {

@@ -1,6 +1,9 @@
 package de.nicolasschlecker.vvsmarthomeservice.controller;
 
 import de.nicolasschlecker.vvsmarthomeservice.domain.sensor.Sensor;
+import de.nicolasschlecker.vvsmarthomeservice.domain.sensor.SensorData;
+import de.nicolasschlecker.vvsmarthomeservice.domain.sensor.SensorDataPartial;
+import de.nicolasschlecker.vvsmarthomeservice.domain.sensor.SensorPartial;
 import de.nicolasschlecker.vvsmarthomeservice.services.SensorService;
 import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.IdMismatchException;
 import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.SensorExistsException;
@@ -28,7 +31,7 @@ public class SensorController {
     }
 
     @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Sensor> addSensor(@RequestBody Sensor sensor) {
+    public ResponseEntity<Sensor> addSensor(@RequestBody SensorPartial sensor) {
         try {
             return ResponseEntity.ok(mService.create(sensor));
         } catch (SensorExistsException e) {
@@ -45,8 +48,26 @@ public class SensorController {
         }
     }
 
+    @GetMapping(value = "/{sensorId}/data", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<SensorData> findSensorDataBySensorId(@PathVariable Long sensorId) {
+        try {
+            return ResponseEntity.ok(mService.findData(sensorId));
+        } catch (SensorNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping(value = "/{sensorId}/data", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<SensorData> upateSensorDataBySensorId(@PathVariable Long sensorId, @RequestBody SensorDataPartial sensorDataPartial) {
+        try {
+            return ResponseEntity.ok(mService.updateData(sensorId, sensorDataPartial));
+        } catch (SensorNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PutMapping(value = "/{sensorId}", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Sensor> updateSensor(@PathVariable Long sensorId, @RequestBody Sensor sensor) {
+    public ResponseEntity<Sensor> updateSensor(@PathVariable Long sensorId, @RequestBody SensorPartial sensor) {
         try {
             return ResponseEntity.ok(mService.update(sensorId, sensor));
         } catch (IdMismatchException e) {
