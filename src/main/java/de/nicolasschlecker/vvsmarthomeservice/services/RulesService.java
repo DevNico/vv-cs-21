@@ -2,7 +2,13 @@ package de.nicolasschlecker.vvsmarthomeservice.services;
 
 import de.nicolasschlecker.vvsmarthomeservice.domain.rule.PersistentRule;
 import de.nicolasschlecker.vvsmarthomeservice.domain.rule.Rule;
+import de.nicolasschlecker.vvsmarthomeservice.repositories.AktorRepository;
 import de.nicolasschlecker.vvsmarthomeservice.repositories.RuleRepository;
+import de.nicolasschlecker.vvsmarthomeservice.repositories.SensorRepository;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.AktorNotFoundException;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.RuleExistsException;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.RuleNotFoundException;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.SensorNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,50 +20,72 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class RulesService {
-    private final RuleRepository mRepository;
+    private final RuleRepository ruleRepository;
+    private final AktorRepository aktorRepository;
+    private final SensorRepository sensorRepository;
 
     @Autowired
-    public RulesService(RuleRepository mRepository) {
-        this.mRepository = mRepository;
+    public RulesService(RuleRepository ruleRepository, AktorRepository aktorRepository, SensorRepository sensorRepository) {
+        this.ruleRepository = ruleRepository;
+        this.aktorRepository = aktorRepository;
+        this.sensorRepository = sensorRepository;
     }
 
-    public Optional<Rule> create(Rule entity) {
-        if (mRepository.existsById(entity.getId())) {
-            return Optional.empty();
+    public Rule create(Rule entity) throws RuleExistsException, AktorNotFoundException, SensorNotFoundException {
+        if (ruleRepository.existsById(entity.getId())) {
+            throw new RuleExistsException();
+        }
+
+        if(!aktorRepository.existsById(entity.getAktorId())) {
+            throw new AktorNotFoundException();
+        }
+
+        if(!sensorRepository.existsById(entity.getSensorId())) {
+            throw new SensorNotFoundException();
         }
 
         final var persistentEntity = persistentEntityFromEntity(entity);
-        return Optional.of(entityFromPersistentEntity(mRepository.save(persistentEntity)));
+        return entityFromPersistentEntity(ruleRepository.save(persistentEntity));
     }
 
     public List<Rule> findAll() {
         return StreamSupport
-                .stream(mRepository.findAll().spliterator(), false)
+                .stream(ruleRepository.findAll().spliterator(), false)
                 .filter(p -> p.getDeletedAt() != null)
                 .map(this::entityFromPersistentEntity)
                 .collect(Collectors.toList());
     }
 
-    public Optional<Rule> findById(Long sensorId) {
-        final var optionalPersistentEntity = mRepository.findById(sensorId);
+    public Rule findById(Long sensorId) throws RuleNotFoundException {
+        final var optionalPersistentEntity = ruleRepository.findById(sensorId);
 
-        return optionalPersistentEntity.map(e -> {
-            if (e.getDeletedAt() == null) {
-                return entityFromPersistentEntity(e);
-            }
-            return null;
-        });
+        if(optionalPersistentEntity.isEmpty()) {
+            throw new RuleNotFoundException();
+        }
+
+        final var rule = optionalPersistentEntity.get();
+
+        if (rule.getDeletedAt() != null) {
+            throw new RuleNotFoundException();
+        }
+
+        return entityFromPersistentEntity(rule);
     }
 
-    public Optional<Rule> findByName(String name) {
-        final var optionalPersistentEntity = mRepository.findByName(name);
+    public Rule findByName(String name) throws RuleNotFoundException {
+        final var optionalPersistentEntity = ruleRepository.findByName(name);
 
-        return optionalPersistentEntity.map(e -> {
-            if (e.getDeletedAt() == null) {
-                return entityFromPersistentEntity(e);
-            }
-            return null;
-        });
+        if(optionalPersistentEntity.isEmpty()) {
+            throw new RuleNotFoundException();
+        }
+
+        final var rule = optionalPersistentEntity.get();
+
+        if (rule.getDeletedAt() != null) {
+            throw new RuleNotFoundException();
+        }
+
+        return entityFromPersistentEntity(rule);
     }
 
     protected Rule entityFromPersistentEntity(PersistentRule e) {

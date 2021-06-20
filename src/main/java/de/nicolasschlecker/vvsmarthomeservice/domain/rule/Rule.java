@@ -9,8 +9,8 @@ public class Rule {
     private Long id;
     private String name;
     private int threshold;
-    private int sensorId;
-    private int aktorId;
+    private Long sensorId;
+    private Long aktorId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
