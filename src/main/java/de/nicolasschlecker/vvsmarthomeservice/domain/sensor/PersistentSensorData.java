@@ -1,9 +1,7 @@
-package de.nicolasschlecker.vvsmarthomeservice.domain;
+package de.nicolasschlecker.vvsmarthomeservice.domain.sensor;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import de.nicolasschlecker.vvsmarthomeservice.domain.TemperatureUnit;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,11 +14,8 @@ import javax.validation.constraints.Min;
 import java.sql.Timestamp;
 
 @Entity
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
-public class SensorData {
+@Data
+public class PersistentSensorData {
     @Id
     @GeneratedValue
     private Long id;
@@ -33,12 +28,14 @@ public class SensorData {
 
     private TemperatureUnit temperatureUnit;
 
-    @OneToOne
-    private Sensor sensor;
+    @OneToOne(mappedBy = "sensorData")
+    private PersistentSensor sensor;
 
     @CreationTimestamp
     private Timestamp createdAt;
 
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    private Timestamp deletedAt;
 }
