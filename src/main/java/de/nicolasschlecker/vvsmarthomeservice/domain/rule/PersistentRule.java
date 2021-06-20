@@ -27,11 +27,11 @@ public class PersistentRule {
     private int threshold;
 
     @ManyToOne()
-    @JoinColumn(name="sensor_id")
+    @JoinColumn(name = "sensor_id")
     private PersistentSensor sensor;
 
     @ManyToOne()
-    @JoinColumn(name="aktor_id")
+    @JoinColumn(name = "aktor_id")
     private PersistentAktor aktor;
 
     @CreationTimestamp

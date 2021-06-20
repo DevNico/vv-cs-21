@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -36,11 +35,11 @@ public class RulesService {
             throw new RuleExistsException();
         }
 
-        if(!aktorRepository.existsById(entity.getAktorId())) {
+        if (!aktorRepository.existsById(entity.getAktorId())) {
             throw new AktorNotFoundException();
         }
 
-        if(!sensorRepository.existsById(entity.getSensorId())) {
+        if (!sensorRepository.existsById(entity.getSensorId())) {
             throw new SensorNotFoundException();
         }
 
@@ -59,7 +58,7 @@ public class RulesService {
     public Rule findById(Long sensorId) throws RuleNotFoundException {
         final var optionalPersistentEntity = ruleRepository.findById(sensorId);
 
-        if(optionalPersistentEntity.isEmpty()) {
+        if (optionalPersistentEntity.isEmpty()) {
             throw new RuleNotFoundException();
         }
 
@@ -75,7 +74,7 @@ public class RulesService {
     public Rule findByName(String name) throws RuleNotFoundException {
         final var optionalPersistentEntity = ruleRepository.findByName(name);
 
-        if(optionalPersistentEntity.isEmpty()) {
+        if (optionalPersistentEntity.isEmpty()) {
             throw new RuleNotFoundException();
         }
 

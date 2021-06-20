@@ -41,7 +41,7 @@ public class AktorController {
         try {
             return ResponseEntity.ok(mService.find(aktorId));
         } catch (AktorNotFoundException e) {
-         return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 }
