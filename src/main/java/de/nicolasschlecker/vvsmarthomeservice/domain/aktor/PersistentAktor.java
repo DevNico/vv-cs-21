@@ -1,9 +1,7 @@
-package de.nicolasschlecker.vvsmarthomeservice.domain;
+package de.nicolasschlecker.vvsmarthomeservice.domain.aktor;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import de.nicolasschlecker.vvsmarthomeservice.domain.rule.PersistentRule;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,29 +13,25 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
-public class Aktor {
+@Data
+public class PersistentAktor {
     @Id
     @GeneratedValue
     private Long id;
 
     private String name;
-
     private String location;
-
     private String serviceUrl;
-
     private String currentState;
 
-    @OneToMany
-    private List<Rule> rules;
+    @OneToMany(mappedBy = "aktor")
+    private List<PersistentRule> rules;
 
     @CreationTimestamp
     private Timestamp createdAt;
 
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    private Timestamp deletedAt;
 }
