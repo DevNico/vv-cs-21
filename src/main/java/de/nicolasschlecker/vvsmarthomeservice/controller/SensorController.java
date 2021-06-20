@@ -2,6 +2,9 @@ package de.nicolasschlecker.vvsmarthomeservice.controller;
 
 import de.nicolasschlecker.vvsmarthomeservice.domain.sensor.Sensor;
 import de.nicolasschlecker.vvsmarthomeservice.services.SensorService;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.IdMismatchException;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.SensorExistsException;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.SensorNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,36 +24,45 @@ public class SensorController {
 
     @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Iterable<Sensor>> findAll() {
-        final var sensors = mService.findAll();
-        return ResponseEntity.ok(sensors);
+        return ResponseEntity.ok(mService.findAll());
     }
 
     @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Sensor> addSensor(@RequestBody Sensor sensor) {
-        final var created = mService.create(sensor);
-        return created.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build());
+        try {
+            return ResponseEntity.ok(mService.create(sensor));
+        } catch (SensorExistsException e) {
+            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
+        }
     }
 
     @GetMapping(value = "/{sensorId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Sensor> findSensorById(@PathVariable Long sensorId) {
-        final var sensor = mService.find(sensorId);
-        return sensor.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        try {
+            return ResponseEntity.ok(mService.find(sensorId));
+        } catch (SensorNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping(value = "/{sensorId}", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Sensor> updateSensor(@PathVariable Long sensorId, @RequestBody Sensor sensor) {
-        final var updated = mService.update(sensorId, sensor);
-        return updated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        try {
+            return ResponseEntity.ok(mService.update(sensorId, sensor));
+        } catch (IdMismatchException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (SensorNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping(value = "/{sensorId}")
     public ResponseEntity<Void> deleteSensorById(@PathVariable Long sensorId) {
-        final var deleted = mService.delete(sensorId);
-
-        if (deleted) {
+        try {
+            mService.delete(sensorId);
             return ResponseEntity.noContent().build();
+        } catch (SensorNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.notFound().build();
     }
 }

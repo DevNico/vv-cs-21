@@ -3,13 +3,15 @@ package de.nicolasschlecker.vvsmarthomeservice.services;
 import de.nicolasschlecker.vvsmarthomeservice.domain.sensor.PersistentSensor;
 import de.nicolasschlecker.vvsmarthomeservice.domain.sensor.Sensor;
 import de.nicolasschlecker.vvsmarthomeservice.repositories.SensorRepository;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.IdMismatchException;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.SensorExistsException;
+import de.nicolasschlecker.vvsmarthomeservice.services.exceptions.SensorNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -22,22 +24,27 @@ public class SensorService {
         this.mRepository = mRepository;
     }
 
-    public Optional<Sensor> create(Sensor sensor) {
+    public Sensor create(Sensor sensor) throws SensorExistsException {
         if (mRepository.existsById(sensor.getId())) {
-            return Optional.empty();
+            throw new SensorExistsException();
         }
 
         final var persistentSensor = persistentSensorFromSensor(sensor);
-        return Optional.of(sensorFromPersistentSensor(mRepository.save(persistentSensor)));
+        return sensorFromPersistentSensor(mRepository.save(persistentSensor));
     }
 
-    public Optional<Sensor> update(Long id, Sensor sensor) {
+    public Sensor update(Long id, Sensor sensor) throws IdMismatchException, SensorNotFoundException {
         if (!id.equals(sensor.getId())) {
-            return Optional.empty();
+            throw new IdMismatchException();
         }
 
-        final var persistentSensor = mRepository.findById(id);
-        return persistentSensor.map((pE) -> sensorFromPersistentSensor(mRepository.save(pE)));
+        final var optionalPersistentSensor = mRepository.findById(id);
+
+        if (optionalPersistentSensor.isEmpty() || optionalPersistentSensor.get().getDeletedAt() != null) {
+            throw new SensorNotFoundException();
+        }
+
+        return sensorFromPersistentSensor(mRepository.save(optionalPersistentSensor.get()));
     }
 
     public List<Sensor> findAll() {
@@ -47,19 +54,26 @@ public class SensorService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<Sensor> find(Long sensorId) {
-        final var sensorDao = mRepository.findById(sensorId);
-        return sensorDao.map(this::sensorFromPersistentSensor);
+    public Sensor find(Long sensorId) throws SensorNotFoundException {
+        final var optionalPersistentSensor = mRepository.findById(sensorId);
+
+        if (optionalPersistentSensor.isEmpty() || optionalPersistentSensor.get().getDeletedAt() != null) {
+            throw new SensorNotFoundException();
+        }
+
+        return sensorFromPersistentSensor(optionalPersistentSensor.get());
     }
 
-    public boolean delete(Long sensorId) {
-        final var optionalSensor = mRepository.findById(sensorId);
+    public void delete(Long sensorId) throws SensorNotFoundException {
+        final var optionalPersistentSensor = mRepository.findById(sensorId);
 
-        return optionalSensor.map((sensor) -> {
-            sensor.setDeletedAt(Timestamp.valueOf(LocalDateTime.now()));
-            mRepository.save(sensor);
-            return true;
-        }).orElse(false);
+        if (optionalPersistentSensor.isEmpty() || optionalPersistentSensor.get().getDeletedAt() != null) {
+            throw new SensorNotFoundException();
+        }
+
+        final var sensor = optionalPersistentSensor.get();
+        sensor.setDeletedAt(Timestamp.valueOf(LocalDateTime.now()));
+        mRepository.save(sensor);
     }
 
     private Sensor sensorFromPersistentSensor(PersistentSensor persistentSensor) {
