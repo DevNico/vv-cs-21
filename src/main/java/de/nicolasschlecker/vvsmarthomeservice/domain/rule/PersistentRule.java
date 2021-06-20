@@ -7,23 +7,19 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.sql.Timestamp;
 
 @Entity
 @Data
-@IdClass(PersistentRuleId.class)
+@Table(name = "rule")
 public class PersistentRule {
     @Id
     @GeneratedValue
     private Long id;
 
-    @Id
+    @Column(unique = true)
     private String name;
 
-    @Min(1)
-    @Max(29)
     private int threshold;
 
     @ManyToOne()
