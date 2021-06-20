@@ -1,9 +1,7 @@
-package de.nicolasschlecker.vvsmarthomeservice.domain;
+package de.nicolasschlecker.vvsmarthomeservice.domain.sensor;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import de.nicolasschlecker.vvsmarthomeservice.domain.rule.PersistentRule;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,24 +10,21 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
-public class Sensor {
+@Data
+public class PersistentSensor {
     @Id
     @GeneratedValue
     private Long id;
 
     private String name;
-
     private String location;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    private SensorData sensorData;
+    @OneToOne()
+    @JoinColumn(name = "sensor_data_id", referencedColumnName = "id")
+    private PersistentSensorData sensorData;
 
-    @OneToMany(cascade = CascadeType.REMOVE)
-    private List<Rule> rules;
+    @OneToMany(mappedBy = "sensor")
+    private List<PersistentRule> rules;
 
     @CreationTimestamp
     private Timestamp createdAt;
