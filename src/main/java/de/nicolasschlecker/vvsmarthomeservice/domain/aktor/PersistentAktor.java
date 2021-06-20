@@ -5,24 +5,21 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
 @Data
+@Table(name = "aktor")
 public class PersistentAktor {
     @Id
-    @GeneratedValue
     private Long id;
 
     private String name;
     private String location;
     private String serviceUrl;
-    private String currentState;
+    private ShutterStatus currentState;
 
     @OneToMany(mappedBy = "aktor")
     private List<PersistentRule> rules;

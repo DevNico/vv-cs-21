@@ -10,7 +10,7 @@ public class Aktor {
     private String name;
     private String location;
     private String serviceUrl;
-    private String currentState;
+    private ShutterStatus currentState;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
