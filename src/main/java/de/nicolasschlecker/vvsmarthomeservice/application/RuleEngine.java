@@ -64,7 +64,13 @@ public class RuleEngine {
                 }
             }
 
-            aktorRepository.saveAll(aktorsToUpdate);
+            if (aktorsToUpdate.isEmpty()) {
+                logger.info("Rules checked, no action necessary.");
+            } else {
+                aktorRepository.saveAll(aktorsToUpdate);
+                logger.info("Rules checked, updated {} aktors.", aktorsToUpdate.size());
+            }
+
 
             try {
                 Thread.sleep(RULE_ENGINE_SLEEP);
