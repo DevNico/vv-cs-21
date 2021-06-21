@@ -1,19 +1,27 @@
 version: "3.7"
 services:
   smart_home_service:
-    build: .
+    container_name: vv-smart-home-service
+    image: "vv-smart-home-service:latest"
     restart: always
     ports:
-      - 8080:8080
+      - ${SHS_PORT}:8080
     depends_on:
       - postgres_db
     links:
       - postgres_db:database
+    environment:
+      DB_HOST: postgres_db
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
   postgres_db:
+    container_name: postgres_db
     image: "postgres:11.4"
     restart: always
     ports:
-      - 5432:5432
+      - ${DB_PORT}:5432
     environment:
-      POSTGRES_DB: shs
-      POSTGRES_PASSWORD: test
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
