@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -21,6 +23,11 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SmartHomeServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(SmartHomeServiceApplication.class, args);
+    }
+
+    @Bean
+    public TaskExecutor ruleEngineExecutor() {
+        return new SimpleAsyncTaskExecutor();
     }
 
     @Bean

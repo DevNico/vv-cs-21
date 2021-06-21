@@ -71,7 +71,7 @@ public class SensorService {
         if (optionalPersistentSensor.isEmpty() || optionalPersistentSensor.get().getDeletedAt() != null) {
             throw new SensorNotFoundException();
         }
-        
+
         final var violations = new ArrayList<ConstraintViolation<?>>(validator.validate(sensorDataPartial));
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
