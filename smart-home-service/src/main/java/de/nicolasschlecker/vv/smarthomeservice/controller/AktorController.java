@@ -19,13 +19,13 @@ public class AktorController {
         this.aktorService = aktorService;
     }
 
-    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(value = {"", "/"}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Iterable<Aktor>> findAll() {
         return ResponseEntity.ok(aktorService.findAll());
     }
 
 
-    @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = {"", "/"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Aktor> addAktor(@RequestBody AktorPartial aktor) {
         return ResponseEntity.ok(aktorService.create(aktor));
     }

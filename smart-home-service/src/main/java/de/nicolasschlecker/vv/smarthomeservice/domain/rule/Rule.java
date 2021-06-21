@@ -9,23 +9,18 @@ import java.time.LocalDateTime;
 
 @Data
 public class Rule {
-    @JsonValue()
     @JsonProperty("RuleId")
     private Long id;
 
-    @JsonValue()
     @JsonProperty("RuleName")
     private String name;
 
-    @JsonValue()
     @JsonProperty("Treshhold")
     private int threshold;
 
-    @JsonValue()
     @JsonProperty("SensorId")
     private Long sensorId;
 
-    @JsonValue()
     @JsonProperty("AktorId")
     private Long aktorId;
 

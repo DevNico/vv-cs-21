@@ -14,17 +14,13 @@ public class SensorDataPartial {
     @Min(0)
     @Max(30)
     @NotNull
-    @JsonValue()
     @JsonProperty("CurrentValue")
     private int currentValue;
 
-    @NotNull
-    @JsonValue()
     @JsonProperty("Timestamp")
-    private LocalDateTime timestamp;
+    private LocalDateTime timestamp = LocalDateTime.now();
 
     @NotNull
-    @JsonValue()
     @JsonProperty("TemperatureUnit")
     private TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
 }

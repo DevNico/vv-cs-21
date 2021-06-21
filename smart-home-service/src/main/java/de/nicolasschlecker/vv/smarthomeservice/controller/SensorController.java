@@ -23,12 +23,12 @@ public class SensorController {
         this.sensorService = sensorService;
     }
 
-    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(value = {"", "/"}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<Sensor>> findAll() {
         return ResponseEntity.ok(sensorService.findAll());
     }
 
-    @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = {"", "/"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Sensor> addSensor(@RequestBody SensorPartial sensor) {
         return ResponseEntity.ok(sensorService.create(sensor));
     }
@@ -43,7 +43,7 @@ public class SensorController {
         return ResponseEntity.ok(sensorService.findData(sensorId));
     }
 
-    @PutMapping(value = "/{sensorId}/data", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/{sensorId}", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<SensorData> updateSensorDataBySensorId(@PathVariable Long sensorId, @RequestBody SensorDataPartial sensorDataPartial) {
         return ResponseEntity.ok(sensorService.updateData(sensorId, sensorDataPartial));
     }

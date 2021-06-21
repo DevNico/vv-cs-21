@@ -8,19 +8,15 @@ import java.time.LocalDateTime;
 
 @Data
 public class Aktor {
-    @JsonValue()
     @JsonProperty("AktorId")
     private Long id;
 
-    @JsonValue()
     @JsonProperty("AktorName")
     private String name;
 
-    @JsonValue()
     @JsonProperty("Location")
     private String location;
 
-    @JsonValue()
     @JsonProperty("ServiceURL")
     private String serviceUrl;
 

@@ -8,15 +8,12 @@ import java.time.LocalDateTime;
 
 @Data
 public class Sensor {
-    @JsonValue()
     @JsonProperty("SensorId")
     private Long id;
 
-    @JsonValue()
     @JsonProperty("SensorName")
     private String name;
 
-    @JsonValue()
     @JsonProperty("Location")
     private String location;
 

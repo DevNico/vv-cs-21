@@ -9,24 +9,20 @@ import javax.validation.constraints.*;
 @Data
 public class RulePartial {
     @NotBlank
-    @JsonValue()
     @JsonProperty("RuleName")
     private String name;
 
     @Min(1)
     @Max(29)
     @NotNull
-    @JsonValue()
     @JsonProperty("Treshhold")
     private int threshold;
 
     @NotNull
-    @JsonValue()
     @JsonProperty("SensorId")
     private Long sensorId;
 
     @NotNull
-    @JsonValue()
     @JsonProperty("AktorId")
     private Long aktorId;
 }

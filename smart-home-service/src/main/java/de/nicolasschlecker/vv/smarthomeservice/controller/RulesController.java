@@ -19,13 +19,13 @@ public class RulesController {
         this.mService = mService;
     }
 
-    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(value = {"", "/"}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Iterable<Rule>> findAll() {
         final var sensors = mService.findAll();
         return ResponseEntity.ok(sensors);
     }
 
-    @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = {"", "/"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Rule> addRule(@RequestBody RulePartial rule) {
         return ResponseEntity.ok(mService.create(rule));
     }

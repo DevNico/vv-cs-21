@@ -2,7 +2,7 @@ version: "3.7"
 services:
   postgres_db:
     container_name: postgres_db
-    image: "postgres:11.4"
+    image: "postgres:12-alpine"
     restart: always
     ports:
       - ${DB_PORT}:5432
@@ -10,33 +10,56 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
   smart_home_service:
-    container_name: vv-smart-home-service
-    image: "vv-smart-home-service:latest"
+    container_name: smart_home_service
+    image: "smart-home-service:latest"
     restart: always
     ports:
-      - ${SHS_PORT}:8080
+      - 8080:8080
+    expose:
+      - 8080
     depends_on:
       - postgres_db
     links:
-      - postgres_db:database
+      - postgres_db:db
     environment:
-      DB_HOST: postgres_db
+      DB_HOST: db
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-#  demosensor:
-#    image:  ss21vvexercise02/demosensor:latest
-#    container_name: demosensor-livingRoom
-#    restart: always
-#    ports:
-#      - 9211:80
-#      - 4501:443
-#    depends_on:
-#      - smart_home_service
-#    links:
-#      - smart_home_service:service
-#    environment:
-#      - SensorId=1
-#      - SmartHomeServiceRegistrationURL=http://service:9000/api/v1/sensors
-#      - SmartHomeServicePublishURL=http://service:9000/api/v1/sensors/1
+  demosensor:
+    image: ss21vvexercise02/demosensor:latest
+    container_name: demosensor-livingRoom
+    restart: always
+    depends_on:
+      - smart_home_service
+    links:
+      - smart_home_service:shs
+    environment:
+      SensorId: 1
+      SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/sensors
+      SmartHomeServicePublishURL: http://shs:8080/api/v1/sensors
+  sensor:
+    image: sensor
+    container_name: sensor
+    restart: always
+    depends_on:
+      - smart_home_service
+    links:
+      - smart_home_service:shs
+    environment:
+      SensorId: 2
+      SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/sensors
+      SmartHomeServicePublishURL: http://shs:8080/api/v1/sensors/2
+  aktor:
+    image: aktor
+    container_name: aktor
+    restart: always
+    depends_on:
+      - smart_home_service
+    links:
+      - smart_home_service:shs
+    environment:
+      SensorId: 2
+      SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/sensors
+      SmartHomeServicePublishURL: http://shs:8080/api/v1/sensors/2

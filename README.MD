@@ -1,5 +1,5 @@
-
 # VV Studienarbeit
+
 [![pipeline status](https://inf-git.fh-rosenheim.de/vv-inf-sose21/schleckernicolas/badges/main/pipeline.svg)](https://inf-git.fh-rosenheim.de/vv-inf-sose21/schleckernicolas/-/commits/main)
 [![coverage report](https://inf-git.fh-rosenheim.de/vv-inf-sose21/schleckernicolas/badges/main/coverage.svg)](https://inf-git.fh-rosenheim.de/vv-inf-sose21/schleckernicolas/-/commits/main)
 
@@ -11,7 +11,8 @@
 - **domain:** Models and exceptions
 - **net:** All network related code, mainly: MeasurementServer
 
-The class `de.nicolasschlecker.vv.DemoSensor` contains and example Sensor that tries to connect to a local MeasurementServer, performs the handshake and then sends 10 Measurements.
+The class `de.nicolasschlecker.vv.DemoSensor` contains and example Sensor that tries to connect to a local
+MeasurementServer, performs the handshake and then sends 10 Measurements.
 
 ## Environment variables
 
@@ -55,4 +56,5 @@ docker run -it -p 3000:3000 station:latest
 ```
 
 ## License
+
 [MIT](https://choosealicense.com/licenses/mit/)

@@ -16,7 +16,6 @@ public class SmartHomeServiceApplication {
         SpringApplication.run(SmartHomeServiceApplication.class, args);
     }
 
-
     @Bean
     public OpenAPI openAPI(@Value("1") String appVersion) {
         return new OpenAPI()

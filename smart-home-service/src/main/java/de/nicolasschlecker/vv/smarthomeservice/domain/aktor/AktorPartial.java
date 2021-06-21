@@ -9,17 +9,14 @@ import javax.validation.constraints.NotNull;
 @Data
 public class AktorPartial {
     @NotNull
-    @JsonValue()
     @JsonProperty("AktorName")
     private String name;
 
     @NotNull
-    @JsonValue()
     @JsonProperty("Location")
     private String location;
 
     @NotNull
-    @JsonValue()
     @JsonProperty("ServiceURL")
     private String serviceUrl;
 }

@@ -1,16 +1,14 @@
-package de.nicolasschlecker.vv.smarthomeservice.domain.sensor;
+package de.nicolasschlecker.vv.sensor.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
 public class SensorData {
-    @JsonProperty("SensorId")
-    private Long sensorId;
-
     @JsonProperty("CurrentValue")
     private int currentValue;
 
@@ -19,7 +17,4 @@ public class SensorData {
 
     @JsonProperty("TemperatureUnit")
     private TemperatureUnit temperatureUnit;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }
