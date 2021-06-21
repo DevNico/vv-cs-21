@@ -1,5 +1,6 @@
 package de.nicolasschlecker.vv.smarthomeservice.domain.sensor;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Max;
@@ -12,11 +13,14 @@ public class SensorDataPartial {
     @Min(0)
     @Max(30)
     @NotNull
+    @JsonProperty("CurrentValue")
     private int currentValue;
 
     @NotNull
+    @JsonProperty("Timestamp")
     private LocalDateTime timestamp;
 
     @NotNull
-    private TemperatureUnit temperatureUnit;
+    @JsonProperty("TemperatureUnit")
+    private TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
 }
