@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.asciidoctor.convert' version '1.5.8'
     id 'org.hidetake.swagger.generator' version '2.18.2'
+    id "com.palantir.docker" version "0.22.1"
     id 'java'
 }
 
@@ -66,4 +67,9 @@ test {
 asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
+}
+
+docker {
+    name "${project.name}:${project.version}"
+    files 'vv-smarthomeservice.jar'
 }
