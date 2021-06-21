@@ -1,4 +1,4 @@
-package de.nicolasschlecker.vvsmarthomeservice;
+package de.nicolasschlecker.vv.smarthomeservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

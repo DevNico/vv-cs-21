@@ -25,3 +25,14 @@ services:
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+  demosensor:
+    image:  ss21vvexercise02/demosensor:latest
+    container_name: demosensor-livingRoom
+    restart: always
+    ports:
+      - 9211:80
+      - 4501:443
+    environment:
+      - SensorId=1
+      - SmartHomeServiceRegistrationURL=http://localhost:9000/api/v1/sensors
+      - SmartHomeServicePublishURL=http://localhost:9000/api/v1/sensors/1
