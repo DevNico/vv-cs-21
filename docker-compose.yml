@@ -1,5 +1,14 @@
 version: "3.7"
 services:
+  postgres_db:
+    container_name: postgres_db
+    image: "postgres:11.4"
+    restart: always
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
   smart_home_service:
     container_name: vv-smart-home-service
     image: "vv-smart-home-service:latest"
@@ -16,23 +25,18 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-  postgres_db:
-    container_name: postgres_db
-    image: "postgres:11.4"
-    restart: always
-    ports:
-      - ${DB_PORT}:5432
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-  demosensor:
-    image:  ss21vvexercise02/demosensor:latest
-    container_name: demosensor-livingRoom
-    restart: always
-    ports:
-      - 9211:80
-      - 4501:443
-    environment:
-      - SensorId=1
-      - SmartHomeServiceRegistrationURL=http://localhost:9000/api/v1/sensors
-      - SmartHomeServicePublishURL=http://localhost:9000/api/v1/sensors/1
+#  demosensor:
+#    image:  ss21vvexercise02/demosensor:latest
+#    container_name: demosensor-livingRoom
+#    restart: always
+#    ports:
+#      - 9211:80
+#      - 4501:443
+#    depends_on:
+#      - smart_home_service
+#    links:
+#      - smart_home_service:service
+#    environment:
+#      - SensorId=1
+#      - SmartHomeServiceRegistrationURL=http://service:9000/api/v1/sensors
+#      - SmartHomeServicePublishURL=http://service:9000/api/v1/sensors/1

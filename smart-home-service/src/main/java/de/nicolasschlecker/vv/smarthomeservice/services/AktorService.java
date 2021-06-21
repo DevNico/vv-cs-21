@@ -30,11 +30,7 @@ public class AktorService {
         this.aktorRepository = aktorRepository;
     }
 
-    public Aktor create(AktorPartial aktorPartial) throws AktorExistsException {
-        if (aktorRepository.existsById(aktorPartial.getId())) {
-            throw new AktorExistsException();
-        }
-
+    public Aktor create(AktorPartial aktorPartial) {
         final var violations = new ArrayList<ConstraintViolation<?>>(validator.validate(aktorPartial));
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);

@@ -3,9 +3,6 @@ package de.nicolasschlecker.vv.smarthomeservice.controller;
 import de.nicolasschlecker.vv.smarthomeservice.domain.rule.Rule;
 import de.nicolasschlecker.vv.smarthomeservice.domain.rule.RulePartial;
 import de.nicolasschlecker.vv.smarthomeservice.services.RulesService;
-import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.AktorNotFoundException;
-import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.RuleNotFoundException;
-import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.SensorNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,28 +27,16 @@ public class RulesController {
 
     @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Rule> addRule(@RequestBody RulePartial rule) {
-        try {
-            return ResponseEntity.ok(mService.create(rule));
-        } catch (AktorNotFoundException | SensorNotFoundException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(mService.create(rule));
     }
 
     @GetMapping(value = "/{ruleId}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Rule> findRuleById(@PathVariable Long ruleId) {
-        try {
-            return ResponseEntity.ok(mService.findById(ruleId));
-        } catch (RuleNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(mService.findById(ruleId));
     }
 
     @GetMapping(value = "/{ruleName}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Rule> findRuleById(@PathVariable String ruleName) {
-        try {
-            return ResponseEntity.ok(mService.findByName(ruleName));
-        } catch (RuleNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(mService.findByName(ruleName));
     }
 }

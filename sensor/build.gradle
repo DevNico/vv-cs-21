@@ -37,3 +37,5 @@ docker {
         jvmArgs = ['-Dspring.profiles.active=production', '-Xmx2048m']
     }
 }
+
+dockerBuildImage.dependsOn(assemble)
