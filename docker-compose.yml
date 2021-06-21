@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  smart_home_service:
+    build: .
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres_db
+    links:
+      - postgres_db:database
+  postgres_db:
+    image: "postgres:11.4"
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: shs
+      POSTGRES_PASSWORD: test
