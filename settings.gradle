@@ -1,1 +1,3 @@
-rootProject.name = 'vv-smart-home-service'
+rootProject.name = 'vv'
+
+include 'smart-home-service', 'sensor'
