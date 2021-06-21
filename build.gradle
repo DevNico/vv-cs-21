@@ -1,81 +1,16 @@
 plugins {
-<<<<<<< Updated upstream
-=======
     id 'com.avast.gradle.docker-compose' version '0.7.1'
->>>>>>> Stashed changes
     id 'java'
-    id 'jacoco'
-    id "org.sonarqube" version "3.0"
 }
 
 group 'de.nicolasschlecker.vv'
-<<<<<<< Updated upstream
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = '1.11'
-targetCompatibility = '1.11'
-
-=======
 version '0.0.1'
->>>>>>> Stashed changes
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-<<<<<<< Updated upstream
-    // Serialisation
-    implementation 'com.google.code.gson:gson:2.8.6'
-
-    // Test dependencies
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.1'
-    testImplementation 'org.hamcrest:hamcrest:2.2'
-    testImplementation 'org.mockito:mockito-inline:3.7.7'
-    testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.6'
-    testImplementation 'com.github.stefanbirkner:system-lambda:1.2.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
-
-test {
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport
-}
-
-// Do not generate reports for individual projects
-jacocoTestReport {
-    dependsOn test
-    reports {
-        xml.enabled true
-        csv.enabled true
-        csv.destination file("${buildDir}/jacocoCsv")
-        html.destination layout.buildDirectory.dir('jacocoHtml').get().asFile
-    }
-}
-
-sonarqube {
-    properties {
-        property "sonar.projectKey", project.properties["SONAR_PROJECT_KEY"]
-        property "sonar.host.url", project.properties['SONAR_HOST']
-        property "sonar.login", project.properties['SONAR_LOGIN']
-    }
-}
-
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'de.nicolasschlecker.vv.Main'
-        )
-    }
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
-
-compileJava {
-    options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
-=======
 //    compile project(':smart-home-service')
 //    compile project(':sensor')
 }
@@ -91,5 +26,4 @@ allprojects {
     repositories {
         mavenCentral()
     }
->>>>>>> Stashed changes
 }
