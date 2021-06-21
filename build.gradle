@@ -1,21 +1,30 @@
 plugins {
+<<<<<<< Updated upstream
+=======
+    id 'com.avast.gradle.docker-compose' version '0.7.1'
+>>>>>>> Stashed changes
     id 'java'
     id 'jacoco'
     id "org.sonarqube" version "3.0"
 }
 
 group 'de.nicolasschlecker.vv'
+<<<<<<< Updated upstream
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = '1.11'
 targetCompatibility = '1.11'
 
+=======
+version '0.0.1'
+>>>>>>> Stashed changes
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+<<<<<<< Updated upstream
     // Serialisation
     implementation 'com.google.code.gson:gson:2.8.6'
 
@@ -66,4 +75,21 @@ jar {
 
 compileJava {
     options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
+=======
+//    compile project(':smart-home-service')
+//    compile project(':sensor')
+}
+
+dockerCompose {
+    useComposeFiles = ['docker-compose.yml']
+}
+
+composeUp.dependsOn('smart-home-service:dockerBuildImage')
+composeUp.dependsOn('sensor:dockerBuildImage')
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+>>>>>>> Stashed changes
 }

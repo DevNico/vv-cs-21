@@ -1,2 +1,8 @@
+<<<<<<< Updated upstream
 rootProject.name = 'vv-project'
 
+=======
+rootProject.name = 'vv'
+
+include 'smart-home-service', 'sensor'
+>>>>>>> Stashed changes
