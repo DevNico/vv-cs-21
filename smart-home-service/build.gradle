@@ -78,7 +78,7 @@ jacocoTestReport {
     reports {
         xml.enabled true
         csv.enabled true
-        csv.destination file("${buildDir}/jacocoCsv")
+        csv.destination layout.buildDirectory.dir('jacocoCsv').get().asFile
         html.destination layout.buildDirectory.dir('jacocoHtml').get().asFile
     }
 }
