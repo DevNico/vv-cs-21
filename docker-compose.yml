@@ -51,6 +51,18 @@ services:
       SensorId: 2
       SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/sensors
       SmartHomeServicePublishURL: http://shs:8080/api/v1/sensors/2
+  demoaktor:
+    image: ss21vvexercise02/demoaktor:latest
+    container_name: vvss21-demoaktor-livingRoom
+    restart: always
+    depends_on:
+      - smart_home_service
+    links:
+      - smart_home_service:shs
+    environment:
+      AktorId: 1
+      SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/aktors
+      ServiceUrl: http://localhost:9212/api/v1/shutter
   aktor:
     image: aktor
     container_name: aktor
@@ -60,6 +72,5 @@ services:
     links:
       - smart_home_service:shs
     environment:
-      SensorId: 2
-      SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/sensors
-      SmartHomeServicePublishURL: http://shs:8080/api/v1/sensors/2
+      AktorId: 2
+      SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/aktors

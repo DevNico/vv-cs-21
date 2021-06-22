@@ -21,9 +21,4 @@ dockerCompose {
 
 composeUp.dependsOn('smart-home-service:dockerBuildImage')
 composeUp.dependsOn('sensor:dockerBuildImage')
-
-allprojects {
-    repositories {
-        mavenCentral()
-    }
-}
+composeUp.dependsOn('aktor:dockerBuildImage')
