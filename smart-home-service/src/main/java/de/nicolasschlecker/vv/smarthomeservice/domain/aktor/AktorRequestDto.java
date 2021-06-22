@@ -1,12 +1,16 @@
 package de.nicolasschlecker.vv.smarthomeservice.domain.aktor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
-@Data
-public class AktorPartial {
+@Getter
+@Setter
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
+public class AktorRequestDto {
     @NotNull
     @JsonProperty("AktorId")
     private Long id;

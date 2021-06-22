@@ -1,27 +1,44 @@
 package de.nicolasschlecker.vv.smarthomeservice.domain.rule;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.Aktor;
+import de.nicolasschlecker.vv.smarthomeservice.domain.sensor.Sensor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.sql.Timestamp;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = "id")
+@Entity
+@Table(name = "rule")
 public class Rule {
-    @JsonProperty("RuleId")
+    @Id
+    @GeneratedValue
     private Long id;
 
-    @JsonProperty("RuleName")
+    @Column(unique = true)
     private String name;
 
-    @JsonProperty("Treshhold")
     private int threshold;
 
-    @JsonProperty("SensorId")
-    private Long sensorId;
+    @ManyToOne()
+    @JoinColumn(name = "sensor_id")
+    private Sensor sensor;
 
-    @JsonProperty("AktorId")
-    private Long aktorId;
+    @ManyToOne()
+    @JoinColumn(name = "aktor_id")
+    private Aktor aktor;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @UpdateTimestamp
+    private Timestamp updatedAt;
+
+    private Timestamp deletedAt;
 }

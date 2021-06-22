@@ -1,4 +1,4 @@
-package de.nicolasschlecker.vv.smarthomeservice.domain.sensor;
+package de.nicolasschlecker.vv.smarthomeservice.domain.sensordata;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

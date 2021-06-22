@@ -1,8 +1,8 @@
 package de.nicolasschlecker.vv.smarthomeservice.controller;
 
-import de.nicolasschlecker.vv.smarthomeservice.domain.rule.Rule;
-import de.nicolasschlecker.vv.smarthomeservice.domain.rule.RulePartial;
-import de.nicolasschlecker.vv.smarthomeservice.services.RulesService;
+import de.nicolasschlecker.vv.smarthomeservice.domain.rule.RuleDto;
+import de.nicolasschlecker.vv.smarthomeservice.domain.rule.RuleRequestDto;
+import de.nicolasschlecker.vv.smarthomeservice.services.RuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,36 +12,31 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/rules")
 public class RulesController {
 
-    private final RulesService mService;
+    private final RuleService mService;
 
     @Autowired
-    public RulesController(RulesService mService) {
+    public RulesController(RuleService mService) {
         this.mService = mService;
     }
 
     @GetMapping(value = {"", "/"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Iterable<Rule>> findAll() {
+    public ResponseEntity<Iterable<RuleDto>> findAll() {
         final var sensors = mService.findAll();
         return ResponseEntity.ok(sensors);
     }
 
     @PostMapping(value = {"", "/"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Rule> addRule(@RequestBody RulePartial rule) {
+    public ResponseEntity<RuleDto> addRule(@RequestBody RuleRequestDto rule) {
         return ResponseEntity.ok(mService.create(rule));
     }
 
     @GetMapping(value = "/{ruleId}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Rule> findRuleById(@PathVariable String ruleId) {
+    public ResponseEntity<RuleDto> findRuleById(@PathVariable String ruleId) {
         try {
             return ResponseEntity.ok(mService.findById(Long.parseLong(ruleId)));
         } catch (NumberFormatException e) {
             return ResponseEntity.ok(mService.findByName(ruleId));
         }
 
-    }
-
-    @GetMapping(value = "/{ruleName}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Rule> findRuleByName(@PathVariable String ruleName) {
-        return ResponseEntity.ok(mService.findByName(ruleName));
     }
 }

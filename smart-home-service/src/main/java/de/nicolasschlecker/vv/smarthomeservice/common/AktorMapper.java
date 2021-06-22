@@ -1,15 +1,15 @@
 package de.nicolasschlecker.vv.smarthomeservice.common;
 
 import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.Aktor;
-import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.AktorPartial;
-import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.PersistentAktor;
+import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.AktorDto;
+import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.AktorRequestDto;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 @Component
 @Mapper(componentModel = "spring", uses = TimestampLocalDateTimeMapper.class)
 public interface AktorMapper {
-    Aktor persistentToAktor(PersistentAktor persistentAktor);
+    AktorDto persistentToAktor(Aktor aktor);
 
-    PersistentAktor aktorPartialToPersistent(AktorPartial aktorPartial);
+    Aktor aktorPartialToPersistent(AktorRequestDto aktorRequestDto);
 }

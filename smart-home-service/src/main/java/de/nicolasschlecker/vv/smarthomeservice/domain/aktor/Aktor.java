@@ -1,26 +1,41 @@
 package de.nicolasschlecker.vv.smarthomeservice.domain.aktor;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import de.nicolasschlecker.vv.smarthomeservice.domain.rule.Rule;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import java.sql.Timestamp;
+import java.util.List;
 
-@Data
+@Entity
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = "id")
+@Table(name = "aktor")
 public class Aktor {
-    @JsonProperty("AktorId")
+    @Id
     private Long id;
 
-    @JsonProperty("AktorName")
     private String name;
-
-    @JsonProperty("Location")
     private String location;
-
-    @JsonProperty("ServiceURL")
     private String serviceUrl;
-
     private ShutterStatus currentState;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @OneToMany(mappedBy = "aktor")
+    private List<Rule> rules;
+
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @UpdateTimestamp
+    private Timestamp updatedAt;
+
+    private Timestamp deletedAt;
 }

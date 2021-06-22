@@ -1,21 +1,25 @@
 package de.nicolasschlecker.vv.smarthomeservice.domain.sensor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
-@Data
-public class SensorPartial {
-    @NotNull
+@Getter
+@Setter
+@EqualsAndHashCode
+public class SensorDto {
     @JsonProperty("SensorId")
     private Long id;
 
-    @NotNull
     @JsonProperty("SensorName")
     private String name;
 
-    @NotNull
     @JsonProperty("Location")
     private String location;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
