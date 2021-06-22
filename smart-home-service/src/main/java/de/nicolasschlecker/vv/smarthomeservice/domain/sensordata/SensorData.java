@@ -1,16 +1,21 @@
-package de.nicolasschlecker.vv.smarthomeservice.domain.sensor;
+package de.nicolasschlecker.vv.smarthomeservice.domain.sensordata;
 
-import lombok.Data;
+import de.nicolasschlecker.vv.smarthomeservice.domain.sensor.Sensor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = "id")
 @Entity
-@Data
 @Table(name = "sensor_data")
-public class PersistentSensorData {
+public class SensorData {
     @Id
     @GeneratedValue
     private Long id;
@@ -20,7 +25,7 @@ public class PersistentSensorData {
     private TemperatureUnit temperatureUnit;
 
     @OneToOne(mappedBy = "sensorData")
-    private PersistentSensor sensor;
+    private Sensor sensor;
 
     @CreationTimestamp
     private Timestamp createdAt;

@@ -19,7 +19,7 @@
 The structure above applies to all of these submodules.
 
 - sensor
-- aktor
+- aktorDto
 - smart-home-service
 
 ## Environment variables
@@ -37,6 +37,7 @@ The environment variables for the docker-compose network are:
 Copy the `template.env`, name it `.env` and configure the environment variables described above.
 
 ### Running docker compose
+
 [Docker](https://www.docker.com/) has to be installed on your machine.
 
 #### From IntelliJ

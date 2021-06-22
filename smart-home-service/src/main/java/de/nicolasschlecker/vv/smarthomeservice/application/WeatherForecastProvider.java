@@ -14,14 +14,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.Optional;
 
 @Service
+@Profile({"production"})
 public class WeatherForecastProvider implements IWeatherForecastProvider {
 
     private final Logger logger = LoggerFactory.getLogger(WeatherForecastProvider.class);

@@ -1,9 +1,10 @@
 package de.nicolasschlecker.vv.smarthomeservice.services;
 
 import de.nicolasschlecker.vv.smarthomeservice.common.AktorMapper;
-import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.Aktor;
-import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.AktorPartial;
+import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.AktorDto;
+import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.AktorRequestDto;
 import de.nicolasschlecker.vv.smarthomeservice.repositories.AktorRepository;
+import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.AktorExistsException;
 import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.AktorNotFoundException;
 import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +30,22 @@ public class AktorService {
         this.aktorRepository = aktorRepository;
     }
 
-    public Aktor create(AktorPartial aktorPartial) {
-        final var violations = new ArrayList<ConstraintViolation<?>>(validator.validate(aktorPartial));
+    public AktorDto create(AktorRequestDto aktorRequestDto) {
+        final var violations = new ArrayList<ConstraintViolation<?>>(validator.validate(aktorRequestDto));
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
 
-        final var persistent = aktorMapper.aktorPartialToPersistent(aktorPartial);
+        if (aktorRepository.existsById(aktorRequestDto.getId())) {
+            throw new AktorExistsException();
+        }
+
+        final var persistent = aktorMapper.aktorPartialToPersistent(aktorRequestDto);
         final var persisted = aktorRepository.save(persistent);
         return aktorMapper.persistentToAktor(persisted);
     }
 
-    public List<Aktor> findAll() {
+    public List<AktorDto> findAll() {
         return StreamSupport
                 .stream(aktorRepository.findAll().spliterator(), false)
                 .filter(p -> p.getDeletedAt() == null)
@@ -48,7 +53,7 @@ public class AktorService {
                 .collect(Collectors.toList());
     }
 
-    public Aktor find(Long sensorId) throws AktorNotFoundException {
+    public AktorDto find(Long sensorId) throws AktorNotFoundException {
         final var optionalPersistentEntity = aktorRepository.findById(sensorId);
 
         if (optionalPersistentEntity.isEmpty()) {

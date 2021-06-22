@@ -2,9 +2,9 @@ package de.nicolasschlecker.vv.smarthomeservice.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.nicolasschlecker.vv.smarthomeservice.application.dependencies.weatherservice.IWeatherForecastProvider;
-import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.PersistentAktor;
+import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.Aktor;
 import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.ShutterStatus;
-import de.nicolasschlecker.vv.smarthomeservice.domain.rule.PersistentRule;
+import de.nicolasschlecker.vv.smarthomeservice.domain.rule.Rule;
 import de.nicolasschlecker.vv.smarthomeservice.repositories.AktorRepository;
 import de.nicolasschlecker.vv.smarthomeservice.repositories.RuleRepository;
 import okhttp3.MediaType;
@@ -14,13 +14,17 @@ import okhttp3.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.LinkedList;
 
+@Profile({"production"})
 @Component
+@EnableScheduling
 public class RuleEngine {
     private final Logger logger = LoggerFactory.getLogger(RuleEngine.class);
 
@@ -42,9 +46,9 @@ public class RuleEngine {
         this.okHttpClient = okHttpClient;
     }
 
-    private boolean updateAktor(PersistentAktor aktor) {
+    private boolean updateAktor(Aktor aktor) {
         try {
-            final var url = String.format("%s?status=%s", aktor.getServiceUrl(), objectMapper.writeValueAsString(aktor.getCurrentState()).replaceAll("\"", ""));
+            final var url = String.format("%s?status=%s", aktor.getServiceUrl(), objectMapper.writeValueAsString(aktor.getCurrentState()).replace("\"", ""));
 
             logger.info("Updating Aktor \"{}\" at \"{}\"", aktor.getId(), url);
             final var request = new Request.Builder()
@@ -65,7 +69,7 @@ public class RuleEngine {
         return false;
     }
 
-    private PersistentAktor checkRule(PersistentRule rule) {
+    private Aktor checkRule(Rule rule) {
         final var aktor = rule.getAktor();
         final var sensor = rule.getSensor();
         final var sensorData = sensor.getSensorData();
@@ -101,7 +105,7 @@ public class RuleEngine {
 
     private void checkRules() {
         final var rules = ruleRepository.findAll();
-        final var aktorsToUpdate = new LinkedList<PersistentAktor>();
+        final var aktorsToUpdate = new LinkedList<Aktor>();
 
         for (final var rule : rules) {
             final var updatedAktor = checkRule(rule);

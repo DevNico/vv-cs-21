@@ -1,7 +1,11 @@
 package de.nicolasschlecker.vv.smarthomeservice.services;
 
 import de.nicolasschlecker.vv.smarthomeservice.common.SensorMapper;
-import de.nicolasschlecker.vv.smarthomeservice.domain.sensor.*;
+import de.nicolasschlecker.vv.smarthomeservice.domain.sensor.SensorDto;
+import de.nicolasschlecker.vv.smarthomeservice.domain.sensor.SensorRequestDto;
+import de.nicolasschlecker.vv.smarthomeservice.domain.sensordata.SensorData;
+import de.nicolasschlecker.vv.smarthomeservice.domain.sensordata.SensorDataDto;
+import de.nicolasschlecker.vv.smarthomeservice.domain.sensordata.SensorDataRequestDto;
 import de.nicolasschlecker.vv.smarthomeservice.repositories.SensorDataRepository;
 import de.nicolasschlecker.vv.smarthomeservice.repositories.SensorRepository;
 import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.IdMismatchException;
@@ -36,17 +40,17 @@ public class SensorService {
         this.sensorDataRepository = sensorDataRepository;
     }
 
-    public Sensor create(SensorPartial partial) throws SensorExistsException, ValidationException {
-        if (sensorRepository.existsById(partial.getId())) {
-            throw new SensorExistsException();
-        }
-
+    public SensorDto create(SensorRequestDto partial) throws SensorExistsException, ValidationException {
         final var violations = new ArrayList<ConstraintViolation<?>>(validator.validate(partial));
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
 
-        final var persistentSensorData = new PersistentSensorData();
+        if (sensorRepository.existsById(partial.getId())) {
+            throw new SensorExistsException();
+        }
+
+        final var persistentSensorData = new SensorData();
         final var persistedSensorData = sensorDataRepository.save(persistentSensorData);
 
         final var persistentSensor = sensorMapper.sensorPartialToPersistentSensor(partial);
@@ -55,7 +59,7 @@ public class SensorService {
         return sensorMapper.sensorFromPersistentSensor(persistedSensor);
     }
 
-    public SensorData findData(Long sensorId) throws SensorNotFoundException {
+    public SensorDataDto findData(Long sensorId) throws SensorNotFoundException {
         final var optionalPersistentSensor = sensorRepository.findById(sensorId);
 
         if (optionalPersistentSensor.isEmpty() || optionalPersistentSensor.get().getDeletedAt() != null) {
@@ -65,28 +69,28 @@ public class SensorService {
         return sensorMapper.sensorDataFromPersistentSensorData(optionalPersistentSensor.get().getSensorData());
     }
 
-    public SensorData updateData(Long sensorId, SensorDataPartial sensorDataPartial) throws SensorNotFoundException {
+    public SensorDataDto updateData(Long sensorId, SensorDataRequestDto sensorDataRequestDto) throws SensorNotFoundException {
+        final var violations = new ArrayList<ConstraintViolation<?>>(validator.validate(sensorDataRequestDto));
+        if (!violations.isEmpty()) {
+            throw new ValidationException(violations);
+        }
+
         final var optionalPersistentSensor = sensorRepository.findById(sensorId);
 
         if (optionalPersistentSensor.isEmpty() || optionalPersistentSensor.get().getDeletedAt() != null) {
             throw new SensorNotFoundException();
         }
 
-        final var violations = new ArrayList<ConstraintViolation<?>>(validator.validate(sensorDataPartial));
-        if (!violations.isEmpty()) {
-            throw new ValidationException(violations);
-        }
-
         final var persistentSensorData = optionalPersistentSensor.get().getSensorData();
-        persistentSensorData.setCurrentValue(sensorDataPartial.getCurrentValue());
-        persistentSensorData.setTimestamp(Timestamp.valueOf(sensorDataPartial.getTimestamp()));
-        persistentSensorData.setTemperatureUnit(sensorDataPartial.getTemperatureUnit());
+        persistentSensorData.setCurrentValue(sensorDataRequestDto.getCurrentValue());
+        persistentSensorData.setTimestamp(Timestamp.valueOf(sensorDataRequestDto.getTimestamp()));
+        persistentSensorData.setTemperatureUnit(sensorDataRequestDto.getTemperatureUnit());
 
         final var persistedSensorData = sensorDataRepository.save(persistentSensorData);
         return sensorMapper.sensorDataFromPersistentSensorData(persistedSensorData);
     }
 
-    public Sensor update(Long id, SensorPartial sensor) throws IdMismatchException, SensorNotFoundException {
+    public SensorDto update(Long id, SensorRequestDto sensor) throws IdMismatchException, SensorNotFoundException {
         if (!id.equals(sensor.getId())) {
             throw new IdMismatchException();
         }
@@ -104,7 +108,7 @@ public class SensorService {
         return sensorMapper.sensorFromPersistentSensor(persisted);
     }
 
-    public List<Sensor> findAll() {
+    public List<SensorDto> findAll() {
         return StreamSupport
                 .stream(sensorRepository.findAll().spliterator(), false)
                 .filter(s -> s.getDeletedAt() == null)
@@ -112,7 +116,7 @@ public class SensorService {
                 .collect(Collectors.toList());
     }
 
-    public Sensor find(Long sensorId) throws SensorNotFoundException {
+    public SensorDto find(Long sensorId) throws SensorNotFoundException {
         final var optionalPersistentSensor = sensorRepository.findById(sensorId);
 
         if (optionalPersistentSensor.isEmpty() || optionalPersistentSensor.get().getDeletedAt() != null) {
