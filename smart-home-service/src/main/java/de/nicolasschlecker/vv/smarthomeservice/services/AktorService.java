@@ -4,7 +4,6 @@ import de.nicolasschlecker.vv.smarthomeservice.common.AktorMapper;
 import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.Aktor;
 import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.AktorPartial;
 import de.nicolasschlecker.vv.smarthomeservice.repositories.AktorRepository;
-import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.AktorExistsException;
 import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.AktorNotFoundException;
 import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;

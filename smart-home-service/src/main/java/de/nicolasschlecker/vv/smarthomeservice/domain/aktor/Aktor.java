@@ -1,7 +1,6 @@
 package de.nicolasschlecker.vv.smarthomeservice.domain.aktor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Data;
 
 import java.time.LocalDateTime;
