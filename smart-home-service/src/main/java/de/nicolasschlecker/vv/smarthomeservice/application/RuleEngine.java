@@ -40,7 +40,7 @@ public class RuleEngine {
 
     private boolean updateAktor(PersistentAktor aktor) {
         try {
-            final var url = String.format("%s?status=%s", aktor.getServiceUrl(), objectMapper.writeValueAsString(aktor.getCurrentState()));
+            final var url = String.format("%s?status=%s", aktor.getServiceUrl(), objectMapper.writeValueAsString(aktor.getCurrentState()).replaceAll("\"", ""));
 
             logger.info("Updating Aktor \"{}\" at \"{}\"", aktor.getId(), url);
             final var request = new Request.Builder()

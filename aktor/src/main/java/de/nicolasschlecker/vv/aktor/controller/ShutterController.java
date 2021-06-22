@@ -1,6 +1,5 @@
 package de.nicolasschlecker.vv.aktor.controller;
 
-import de.nicolasschlecker.vv.aktor.domain.ShutterStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -16,7 +15,7 @@ public class ShutterController {
     private final Logger logger = LoggerFactory.getLogger(ShutterController.class);
 
     @PostMapping(value = "/shutter", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Void> updateShutterStatus(@RequestParam("status") ShutterStatus status) {
+    public ResponseEntity<Void> updateShutterStatus(@RequestParam("status") String status) {
         logger.info("POST /api/v1/shutter?status={}", status);
         return ResponseEntity.noContent().build();
     }
