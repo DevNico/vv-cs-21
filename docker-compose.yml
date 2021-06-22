@@ -2,7 +2,7 @@ version: "3.7"
 services:
   postgres_db:
     container_name: postgres_db
-    image: "postgres:12-alpine"
+    image: postgres:12-alpine
     restart: always
     ports:
       - ${DB_PORT}:5432
@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
   smart_home_service:
     container_name: smart_home_service
-    image: "smart-home-service:latest"
+    image: smart-home-service:latest
     restart: always
     ports:
       - 8080:8080
@@ -40,7 +40,7 @@ services:
       SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/sensors
       SmartHomeServicePublishURL: http://shs:8080/api/v1/sensors
   sensor:
-    image: sensor
+    image: sensor:latest
     container_name: sensor
     restart: always
     depends_on:
@@ -51,15 +51,33 @@ services:
       SensorId: 2
       SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/sensors
       SmartHomeServicePublishURL: http://shs:8080/api/v1/sensors/2
+#  demoaktor:
+#    image: ss21vvexercise02/demoaktor:latest
+#    container_name: vvss21-demoaktor-livingRoom
+#    restart: always
+#    expose:
+#      - 9212
+#    depends_on:
+#      - smart_home_service
+#    links:
+#      - smart_home_service:shs
+#    environment:
+#      AktorId: 1
+#      SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/aktors
+#      ServiceUrl: http://localhost:9212/api/v1/shutter
   aktor:
-    image: aktor
+    image: aktor:latest
     container_name: aktor
     restart: always
+    ports:
+    - 9212:9212
+    expose:
+      - 9212
     depends_on:
       - smart_home_service
     links:
       - smart_home_service:shs
     environment:
-      SensorId: 2
-      SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/sensors
-      SmartHomeServicePublishURL: http://shs:8080/api/v1/sensors/2
+      SERVER_PORT: 9212
+      AktorId: 2
+      SmartHomeServiceRegistrationURL: http://shs:8080/api/v1/aktors

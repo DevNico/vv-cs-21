@@ -20,9 +20,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation group: 'io.freefair.okhttp-spring-boot', name: 'okhttp3-spring-boot-starter', version: '2.4.5.1'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'io.freefair.okhttp-spring-boot', name: 'okhttp3-spring-boot-starter', version: '2.4.5.1'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
@@ -33,7 +32,6 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
 
 docker {
     springBootApplication {

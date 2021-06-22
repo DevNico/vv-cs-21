@@ -5,4 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.ALREADY_REPORTED)
 public class RuleExistsException extends RuntimeException {
+    public RuleExistsException() {
+        super("Rule already exists");
+    }
 }
