@@ -19,9 +19,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
-import java.util.Random;
 
 @Service
 public class SensorService {
@@ -39,7 +39,7 @@ public class SensorService {
 
     private final OkHttpClient okHttpClient;
     private final ObjectMapper objectMapper;
-    private final Random random;
+    private final SecureRandom random;
     private boolean registered;
 
     @Autowired
@@ -49,7 +49,7 @@ public class SensorService {
                 .json()
                 .dateFormat(DateFormat.getDateTimeInstance())
                 .build();
-        this.random = new Random();
+        this.random = new SecureRandom();
         this.registered = false;
     }
 
@@ -109,10 +109,6 @@ public class SensorService {
         final var response = okHttpClient.newCall(request).execute();
 
         if (!response.isSuccessful()) {
-            final var body = response.body();
-            if (body != null) {
-                logger.error(body.string());
-            }
             throw new IOException();
         }
     }

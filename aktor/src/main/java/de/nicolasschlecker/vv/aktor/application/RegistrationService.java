@@ -28,8 +28,7 @@ public class RegistrationService implements Runnable {
     @Value("${SmartHomeServiceRegistrationURL}")
     private String smartHomeServiceRegistrationURL;
 
-
-    @Value("${local.server.port}")
+    @Value("${server.port}")
     private int port;
 
     private final OkHttpClient okHttpClient;
@@ -46,28 +45,30 @@ public class RegistrationService implements Runnable {
 
     @Override
     public void run() {
-        final var name = "VV-DemoSensor";
-        final var location = "VV-DemoSensor";
+        final var name = "VV-DemoAktor";
+        final var location = "VV-DemoAktor";
         String serviceUrl;
         try {
             final var ip = InetAddress.getLocalHost().getHostAddress();
-            serviceUrl = String.format("http://%s:%s/api/v1/status?");
+            serviceUrl = String.format("http://%s:%s/api/v1/shutter", ip, port);
         } catch (UnknownHostException e) {
             logger.error("Couldn't get local ip address.");
+            return;
         }
         var counter = 0;
+        var registered = false;
 
-        while (Thread.currentThread().isAlive()) {
+        while (!registered) {
             try {
                 logger.info("Registering Aktor \"{}\" with id \"{}\" at \"{}\"", name, aktorId, location);
-                final var aktor = new Aktor(aktorId, name, location, "");
+                final var aktor = new Aktor(aktorId, name, location, serviceUrl);
                 final var request = new Request.Builder()
                         .post(RequestBody.create(MediaType.get("application/json"), objectMapper.writeValueAsString(aktor)))
                         .url(smartHomeServiceRegistrationURL)
                         .build();
                 sendRequest(request);
                 logger.info("Aktor registered.");
-                Thread.currentThread().interrupt();
+                registered = true;
             } catch (IOException e) {
                 logger.error("Couldn't register sensor, retrying in 10 seconds, tries: {}", ++counter, e);
                 try {
@@ -83,10 +84,6 @@ public class RegistrationService implements Runnable {
         final var response = okHttpClient.newCall(request).execute();
 
         if (!response.isSuccessful()) {
-            final var body = response.body();
-            if (body != null) {
-                logger.error(body.string());
-            }
             throw new IOException();
         }
     }

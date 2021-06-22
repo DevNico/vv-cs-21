@@ -5,4 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.ALREADY_REPORTED)
 public class AktorExistsException extends RuntimeException {
+    public AktorExistsException() {
+        super("Aktor already exists");
+    }
 }

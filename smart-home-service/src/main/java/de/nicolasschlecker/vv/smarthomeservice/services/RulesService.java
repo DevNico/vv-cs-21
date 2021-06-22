@@ -7,10 +7,7 @@ import de.nicolasschlecker.vv.smarthomeservice.domain.rule.RulePartial;
 import de.nicolasschlecker.vv.smarthomeservice.repositories.AktorRepository;
 import de.nicolasschlecker.vv.smarthomeservice.repositories.RuleRepository;
 import de.nicolasschlecker.vv.smarthomeservice.repositories.SensorRepository;
-import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.AktorNotFoundException;
-import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.RuleNotFoundException;
-import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.SensorNotFoundException;
-import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.ValidationException;
+import de.nicolasschlecker.vv.smarthomeservice.services.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +40,12 @@ public class RulesService {
         final var violations = new ArrayList<ConstraintViolation<?>>(validator.validate(rulePartial));
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
+        }
+
+
+        final var optionalPersistentRule = ruleRepository.findByName(rulePartial.getName());
+        if (optionalPersistentRule.isPresent()) {
+            throw new RuleExistsException();
         }
 
         final var optionalPersistentAktor = aktorRepository.findById(rulePartial.getAktorId());

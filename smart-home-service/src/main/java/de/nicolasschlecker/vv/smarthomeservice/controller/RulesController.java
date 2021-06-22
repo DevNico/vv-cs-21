@@ -31,12 +31,17 @@ public class RulesController {
     }
 
     @GetMapping(value = "/{ruleId}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Rule> findRuleById(@PathVariable Long ruleId) {
-        return ResponseEntity.ok(mService.findById(ruleId));
+    public ResponseEntity<Rule> findRuleById(@PathVariable String ruleId) {
+        try {
+            return ResponseEntity.ok(mService.findById(Long.parseLong(ruleId)));
+        } catch (NumberFormatException e) {
+            return ResponseEntity.ok(mService.findByName(ruleId));
+        }
+
     }
 
     @GetMapping(value = "/{ruleName}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Rule> findRuleById(@PathVariable String ruleName) {
+    public ResponseEntity<Rule> findRuleByName(@PathVariable String ruleName) {
         return ResponseEntity.ok(mService.findByName(ruleName));
     }
 }
