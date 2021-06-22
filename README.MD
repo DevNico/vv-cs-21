@@ -5,54 +5,58 @@
 
 ## Project structure
 
-**de.nicolasschlecker.vv**
+### General
 
-- **common:** Central place for common logic used throughout the application. Mainly Logging and Serialisation.
-- **domain:** Models and exceptions
-- **net:** All network related code, mainly: MeasurementServer
+- **application:** Application logic as well as external dependencies
+- **common:** Central place for common logic used throughout the application.
+- **domain:** Models
+- **controller:** Rest controller
+- **repositories:** Repositories that communicate with the database
+- **service:** Services to translate between controllers and repositories
 
-The class `de.nicolasschlecker.vv.DemoSensor` contains and example Sensor that tries to connect to a local
-MeasurementServer, performs the handshake and then sends 10 Measurements.
+### Submodules
+
+The structure above applies to all of these submodules.
+
+- sensor
+- aktor
+- smart-home-service
 
 ## Environment variables
 
-- **PORT:** The port the server should use
-- **LOG_FILE:** Path for the log file
-- **LOG_LEVEL:** One of `[OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL]`
-- **JSON_FILE:** Path for the file containing received measurements
+The environment variables for the docker-compose network are:
 
-## Building and running the project manually
+- **DB_PASSWORD:** Password to use for the postgres database
+- **WEATHER_SERVICE_USERNAME:** Username for the weather service
+- **WEATHER_SERVICE_PASSWORD:** Password for the weather service
 
-Use the build tool [gradle](https://gradle.org/) to build this project.
+## Getting started
+
+### Configuration
+
+Copy the `template.env`, name it `.env` and configure the environment variables described above.
+
+### Running docker compose
+[Docker](https://www.docker.com/) has to be installed on your machine.
+
+#### From IntelliJ
+
+In the root project run the `docker` -> `composeUp` task.
+
+This will build all three sub-projects, generate their respective `Docker` files and then run `docker-comopse`.
+
+#### From the CLI
+
+Windows
 
 ```bash
-./gradlew build
+gradlew.bat composeUp
 ```
 
-To start the server just run
+MacOS / Linux
 
 ```bash
-java -jar build/libs/vv-project-1.0-SNAPSHOT.jar
-```
-
-## Build and running Docker image
-
-For building the image [docker](https://www.docker.com/) has to be installed on your machine.
-
-```bash
-docker build -t station .
-```
-
-You can then run the image with
-
-```bash
-docker run -p 3000:3000 station:latest
-```
-
-If you want the server to run interactively (with console output) run
-
-```bash
-docker run -it -p 3000:3000 station:latest
+./gradlew composeUp
 ```
 
 ## License
