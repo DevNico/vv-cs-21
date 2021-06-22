@@ -12,7 +12,9 @@ repositories {
 }
 
 dependencies {
-
+    compileOnly project(':aktor')
+    compileOnly project(':sensor')
+    compileOnly project(':smart-home-service')
 }
 
 sonarqube {
@@ -26,7 +28,6 @@ sonarqube {
 dockerCompose {
     useComposeFiles = ['docker-compose.yml']
 }
-
 composeUp.dependsOn('smart-home-service:dockerBuildImage')
 composeUp.dependsOn('sensor:dockerBuildImage')
 composeUp.dependsOn('aktor:dockerBuildImage')
