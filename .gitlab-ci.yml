@@ -31,17 +31,3 @@ test:
     paths:
       - ./build*
     expire_in: 1 day
-
-docker-build:
-  image: inf-docker.fh-rosenheim.de/studwinten4338/docker-images/docker:latest
-  stage: dockerize
-  services:
-    - name: inf-docker.fh-rosenheim.de/studwinten4338/docker-images/docker:dind
-      alias: docker
-
-  before_script:
-    - echo $CI_BUILD_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-  script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
-    - docker push "$CI_REGISTRY_IMAGE"
-
