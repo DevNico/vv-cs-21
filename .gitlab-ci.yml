@@ -1,7 +1,7 @@
 stages:
   - build
   - test
-  - dockerize
+#  - dockerize
 
 variables:
   JACOCO_CSV_LOCATION: '$CI_PROJECT_DIR/smart-home-service/build/jacocoCsv'
@@ -32,11 +32,11 @@ test:
       - ./smart-home-service/build*
     expire_in: 1 day
 
-dockerize:
-  stage: dockerize
-  image: inf-docker.fh-rosenheim.de/studwinten4338/docker-images/gradle:6.8.3-jdk11
-  services:
-    - docker:dind
-  script:
-    - echo "Dockerization"
-    - gradle dockerBuildImage
+#dockerize:
+#  stage: dockerize
+#  image: inf-docker.fh-rosenheim.de/studwinten4338/docker-images/gradle:6.8.3-jdk11
+#  services:
+#    - docker:dind
+#  script:
+#    - echo "Dockerization"
+#    - gradle dockerBuildImage
