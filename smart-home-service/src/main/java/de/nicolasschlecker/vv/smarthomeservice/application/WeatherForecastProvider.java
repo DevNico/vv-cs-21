@@ -1,8 +1,11 @@
-package de.nicolasschlecker.vv.smarthomeservice.services;
+package de.nicolasschlecker.vv.smarthomeservice.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.nicolasschlecker.vv.smarthomeservice.application.dependencies.weatherservice.IWeatherService;
-import de.nicolasschlecker.vv.smarthomeservice.domain.WeatherServiceUser;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import de.nicolasschlecker.vv.smarthomeservice.application.dependencies.weatherservice.IWeatherForecastProvider;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -11,15 +14,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.Optional;
 
 @Service
-public class WeatherService implements IWeatherService {
+public class WeatherForecastProvider implements IWeatherForecastProvider {
 
-    private final Logger logger = LoggerFactory.getLogger(WeatherService.class);
+    private final Logger logger = LoggerFactory.getLogger(WeatherForecastProvider.class);
 
     @Value("${WEATHER_SERVICE_AUTH_URL}")
     private String weatherServiceAuthUrl;
@@ -27,7 +32,7 @@ public class WeatherService implements IWeatherService {
     @Value("${WEATHER_SERVICE_DATA_URL}")
     private String weatherServiceDataUrl;
 
-    @Value("${WEATHER_SERVICE_USERNAME")
+    @Value("${WEATHER_SERVICE_USERNAME}")
     private String weatherServiceUsername;
 
     @Value("${WEATHER_SERVICE_PASSWORD}")
@@ -37,19 +42,33 @@ public class WeatherService implements IWeatherService {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public WeatherService(OkHttpClient okHttpClient, ObjectMapper objectMapper) {
+    public WeatherForecastProvider(OkHttpClient okHttpClient) {
         this.okHttpClient = okHttpClient;
-        this.objectMapper = objectMapper;
+        this.objectMapper = Jackson2ObjectMapperBuilder.json().build();
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class User {
+        private String username;
+        private String password;
+    }
+
+    private String buildCredentials(String username, String password) throws JsonProcessingException {
+        final var user = new User(username, password);
+        return objectMapper.writeValueAsString(user);
     }
 
     private Optional<String> getApiKey() {
         try {
-            final var credentials = new WeatherServiceUser(weatherServiceUsername, weatherServicePassword);
-            final var credentialsJson = objectMapper.writeValueAsString(credentials);
+            final var credentials = buildCredentials(weatherServiceUsername, weatherServicePassword);
+            final var logCredentials = buildCredentials(weatherServiceUsername, "*".repeat(weatherServicePassword.length()));
+
+            logger.info("Requesting api token for WeatherService from {} with credentials {}", weatherServiceAuthUrl, logCredentials);
 
             final var
                     request = new Request.Builder()
-                    .post(RequestBody.create(MediaType.get("application/json"), credentialsJson))
+                    .post(RequestBody.create(MediaType.get("application/json"), credentials))
                     .url(weatherServiceAuthUrl)
                     .build();
             final var response = okHttpClient.newCall(request).execute();
@@ -57,8 +76,11 @@ public class WeatherService implements IWeatherService {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return Optional.of(response.body().string());
+            } else {
+                throw new IOException(response.message());
             }
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            logger.error("Failed to get api key for WeatherService", e);
         }
         return Optional.empty();
     }
@@ -85,8 +107,10 @@ public class WeatherService implements IWeatherService {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 final var responseString = response.body().string();
-                logger.info("Got Weather forecast: {}", responseString);
-                return Optional.of(responseString);
+                final var weatherResponseNode = objectMapper.readValue(responseString, ObjectNode.class);
+                final var summary = weatherResponseNode.get("summary").asText();
+                logger.info("Got Weather forecast: {}", summary);
+                return Optional.of(summary);
             }
         } catch (IOException e) {
             logger.error("Couldn't get Weather forecast", e);

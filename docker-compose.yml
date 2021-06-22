@@ -22,7 +22,8 @@ services:
     links:
       - postgres_db:db
     environment:
-      WEATHER_SERVICE_URL: https://ss21vv-externalweatherservice.azurewebsites.net/api/WeatherForecast
+      WEATHER_SERVICE_AUTH_URL: https://ss21vv-externalweatherservice.azurewebsites.net/api/v1/authenticate
+      WEATHER_SERVICE_DATA_URL: https://ss21vv-externalweatherservice.azurewebsites.net/api/WeatherForecast
       WEATHER_SERVICE_USERNAME: ${WEATHER_SERVICE_USERNAME}
       WEATHER_SERVICE_PASSWORD: ${WEATHER_SERVICE_PASSWORD}
       DB_HOST: db

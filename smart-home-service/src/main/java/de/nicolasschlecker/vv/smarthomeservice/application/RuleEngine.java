@@ -1,7 +1,7 @@
 package de.nicolasschlecker.vv.smarthomeservice.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.nicolasschlecker.vv.smarthomeservice.application.dependencies.weatherservice.IWeatherService;
+import de.nicolasschlecker.vv.smarthomeservice.application.dependencies.weatherservice.IWeatherForecastProvider;
 import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.PersistentAktor;
 import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.ShutterStatus;
 import de.nicolasschlecker.vv.smarthomeservice.domain.rule.PersistentRule;
@@ -27,14 +27,14 @@ public class RuleEngine {
     private static final int RULE_ENGINE_SLEEP = 30 * 1000;
     private static final String WEATHER_SUNNY = "Sunny";
 
-    private final IWeatherService weatherService;
+    private final IWeatherForecastProvider weatherService;
     private final RuleRepository ruleRepository;
     private final AktorRepository aktorRepository;
     private final ObjectMapper objectMapper;
     private final OkHttpClient okHttpClient;
 
     @Autowired
-    public RuleEngine(IWeatherService weatherService, RuleRepository ruleRepository, AktorRepository aktorRepository, ObjectMapper objectMapper, OkHttpClient okHttpClient) {
+    public RuleEngine(IWeatherForecastProvider weatherService, RuleRepository ruleRepository, AktorRepository aktorRepository, ObjectMapper objectMapper, OkHttpClient okHttpClient) {
         this.weatherService = weatherService;
         this.ruleRepository = ruleRepository;
         this.aktorRepository = aktorRepository;

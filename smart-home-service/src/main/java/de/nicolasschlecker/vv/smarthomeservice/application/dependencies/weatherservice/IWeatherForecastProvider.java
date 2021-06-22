@@ -2,6 +2,6 @@ package de.nicolasschlecker.vv.smarthomeservice.application.dependencies.weather
 
 import java.util.Optional;
 
-public interface IWeatherService {
+public interface IWeatherForecastProvider {
     Optional<String> getWeather();
 }
