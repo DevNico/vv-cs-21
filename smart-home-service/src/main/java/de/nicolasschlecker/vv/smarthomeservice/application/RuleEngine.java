@@ -1,6 +1,7 @@
 package de.nicolasschlecker.vv.smarthomeservice.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.nicolasschlecker.vv.smarthomeservice.application.dependencies.weatherservice.IWeatherService;
 import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.PersistentAktor;
 import de.nicolasschlecker.vv.smarthomeservice.domain.aktor.ShutterStatus;
 import de.nicolasschlecker.vv.smarthomeservice.domain.rule.PersistentRule;
@@ -24,14 +25,17 @@ public class RuleEngine {
     private final Logger logger = LoggerFactory.getLogger(RuleEngine.class);
 
     private static final int RULE_ENGINE_SLEEP = 30 * 1000;
+    private static final String WEATHER_SUNNY = "Sunny";
 
+    private final IWeatherService weatherService;
     private final RuleRepository ruleRepository;
     private final AktorRepository aktorRepository;
     private final ObjectMapper objectMapper;
     private final OkHttpClient okHttpClient;
 
     @Autowired
-    public RuleEngine(RuleRepository ruleRepository, AktorRepository aktorRepository, ObjectMapper objectMapper, OkHttpClient okHttpClient) {
+    public RuleEngine(IWeatherService weatherService, RuleRepository ruleRepository, AktorRepository aktorRepository, ObjectMapper objectMapper, OkHttpClient okHttpClient) {
+        this.weatherService = weatherService;
         this.ruleRepository = ruleRepository;
         this.aktorRepository = aktorRepository;
         this.objectMapper = objectMapper;
@@ -95,30 +99,56 @@ public class RuleEngine {
         return null;
     }
 
+    private void checkRules() {
+        final var rules = ruleRepository.findAll();
+        final var aktorsToUpdate = new LinkedList<PersistentAktor>();
+
+        for (final var rule : rules) {
+            final var updatedAktor = checkRule(rule);
+
+            if (updatedAktor != null) {
+                aktorsToUpdate.add(updatedAktor);
+            }
+        }
+
+        if (aktorsToUpdate.isEmpty()) {
+            logger.info("Rules checked, no action necessary.");
+        } else {
+            aktorRepository.saveAll(aktorsToUpdate);
+            logger.info("Rules checked, updated {} aktors.", aktorsToUpdate.size());
+        }
+    }
+
+    private boolean checkWeather() {
+        final var weather = weatherService.getWeather();
+
+        if (weather.isEmpty()) {
+            logger.error("Couldn't get Weather for Rules");
+            return false;
+        }
+
+        final var weatherString = weather.get();
+
+        logger.info("Weather: {}", weatherString);
+
+        if (!weatherString.equals(WEATHER_SUNNY)) {
+            logger.info("Rules checked, weather is not {}", WEATHER_SUNNY);
+            return false;
+        }
+
+        return true;
+    }
+
     @Scheduled(fixedRate = RULE_ENGINE_SLEEP)
-    public void checkRules() {
+    public void ruleEngine() {
         logger.info("RuleEngine started");
 
         while (Thread.currentThread().isAlive()) {
             logger.info("Checking rules...");
-            final var rules = ruleRepository.findAll();
-            final var aktorsToUpdate = new LinkedList<PersistentAktor>();
 
-            for (final var rule : rules) {
-                final var updatedAktor = checkRule(rule);
-
-                if (updatedAktor != null) {
-                    aktorsToUpdate.add(updatedAktor);
-                }
+            if (checkWeather()) {
+                checkRules();
             }
-
-            if (aktorsToUpdate.isEmpty()) {
-                logger.info("Rules checked, no action necessary.");
-            } else {
-                aktorRepository.saveAll(aktorsToUpdate);
-                logger.info("Rules checked, updated {} aktors.", aktorsToUpdate.size());
-            }
-
 
             try {
                 Thread.sleep(RULE_ENGINE_SLEEP);
