@@ -14,8 +14,7 @@ public class ShutterController {
 
     @PostMapping(value = "shutter", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Void> updateShutterStatus(@RequestParam("status") ShutterStatus status) {
-        // return ResponseEntity.ok(aktorService.create(aktor));
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
 }
