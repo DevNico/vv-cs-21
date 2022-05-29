@@ -1,7 +1,6 @@
-# VV Studienarbeit
+# Distributed Systems Student Project
 
-[![pipeline status](https://inf-git.fh-rosenheim.de/vv-inf-sose21/schleckernicolas/badges/main/pipeline.svg)](https://inf-git.fh-rosenheim.de/vv-inf-sose21/schleckernicolas/-/commits/main)
-[![coverage report](https://inf-git.fh-rosenheim.de/vv-inf-sose21/schleckernicolas/badges/main/coverage.svg)](https://inf-git.fh-rosenheim.de/vv-inf-sose21/schleckernicolas/-/commits/main)
+This is a student project I did in my fourth semester of computer science for the Distributed Systems course at the [Rosenheim Technical University of Applied Sciencess](https://th-rosenheim.de).
 
 ## Project structure
 
